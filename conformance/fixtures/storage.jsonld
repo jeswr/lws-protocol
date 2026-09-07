@@ -1,0 +1,11 @@
+{
+  "@context": ["https://www.w3.org/ns/cid/v1", "https://www.w3.org/ns/lws/v1"],
+  "id": "https://storage.example/",
+  "type": "Storage",
+  "service": [{"id": "https://storage.example/#root-service", "type": "StorageRoot", "serviceEndpoint": "https://storage.example/root/"}],
+  "capability": [
+    {"type": "RepresentationCapability", "appliesTo": "https://www.w3.org/ns/lws#Storage", "produces": ["text/turtle"]},
+    {"type": "RepresentationCapability", "appliesTo": "https://www.w3.org/ns/lws#Storage", "produces": ["application/lws+cid"], "representationProfile": "https://www.w3.org/ns/lws#FixedJsonRepresentation"},
+    {"type": "RepresentationCapability", "appliesTo": "https://www.w3.org/ns/lws#Container", "produces": ["text/turtle"]}
+  ]
+}

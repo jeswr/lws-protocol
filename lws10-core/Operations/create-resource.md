@@ -87,4 +87,4 @@ This creates a new <a>container</a> at `/alice/notes/`, with server-generated me
 * For discoverability, servers SHOULD include a `Link` header with `rel="https://www.w3.org/ns/lws#storage"` on 401 responses to guide clients without hardcoded URIs.
 
 **Managing and Retrieving Metadata (Related to Creation):**
-While metadata is primarily retrieved via read operations, it is generated during creation. Clients can immediately retrieve it post-creation using GET or HEAD on the new resource URI. Clients can use the `Prefer` header to request inclusion of specific metadata links (via relation types) and attributes.
+While metadata is primarily retrieved via read operations, it is generated during creation. Clients can immediately retrieve it post-creation using GET or HEAD on the new resource URI. Additional metadata preferences require an explicitly defined extension; required discovery links remain available.

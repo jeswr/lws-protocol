@@ -1,0 +1,28 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix lws: <https://www.w3.org/ns/lws#> .
+@prefix did: <https://www.w3.org/ns/did#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix shape: <urn:lws:shape:> .
+
+# Listing subjects are selected explicitly by the test harness as well as by count.
+# A contained container description need not recursively include its listing.
+shape:Container a sh:NodeShape ; sh:targetSubjectsOf lws:totalItems ; sh:nodeKind sh:IRI ;
+    sh:property [ sh:path lws:totalItems ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:integer ; sh:minInclusive 0 ],
+      [ sh:path lws:items ; sh:nodeKind sh:IRI ; sh:or ([ sh:class lws:Container ] [ sh:class lws:DataResource ]) ] .
+shape:DataResource a sh:NodeShape ; sh:targetClass lws:DataResource ; sh:nodeKind sh:IRI ;
+    sh:property [ sh:path dct:format ; sh:minCount 1 ; sh:datatype xsd:string ] .
+shape:Storage a sh:NodeShape ; sh:targetClass lws:Storage ; sh:nodeKind sh:IRI ;
+    sh:property [ sh:path did:service ; sh:qualifiedValueShape [ sh:class lws:StorageRoot ] ; sh:qualifiedMinCount 1 ; sh:qualifiedMaxCount 1 ],
+      [ sh:path lws:capability ; sh:qualifiedValueShape [ sh:class lws:RepresentationCapability ; sh:property [ sh:path lws:appliesTo ; sh:hasValue lws:Storage ] ; sh:property [ sh:path lws:representationScope ; sh:maxCount 0 ] ] ; sh:qualifiedMinCount 1 ],
+      [ sh:path lws:capability ; sh:qualifiedValueShape [ sh:class lws:RepresentationCapability ; sh:property [ sh:path lws:appliesTo ; sh:hasValue lws:Container ] ; sh:property [ sh:path lws:representationScope ; sh:maxCount 0 ] ] ; sh:qualifiedMinCount 1 ] .
+shape:Service a sh:NodeShape ; sh:targetObjectsOf did:service ; sh:nodeKind sh:IRI ;
+    sh:property [ sh:path did:serviceEndpoint ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ],
+      [ sh:path rdf:type ; sh:minCount 1 ; sh:nodeKind sh:IRI ] .
+shape:Representation a sh:NodeShape ; sh:targetClass lws:RepresentationCapability ;
+    sh:property [ sh:path lws:appliesTo ; sh:minCount 1 ; sh:maxCount 1 ; sh:in (lws:Storage lws:Container lws:AccessRequest lws:AccessGrant lws:Notification lws:WebhookSubscription) ],
+      [ sh:path lws:produces ; sh:minCount 1 ; sh:datatype xsd:string ],
+      [ sh:path lws:accepts ; sh:datatype xsd:string ],
+      [ sh:path lws:representationScope ; sh:maxCount 1 ; sh:nodeKind sh:IRI ],
+      [ sh:path lws:representationProfile ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] .

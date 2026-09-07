@@ -1,0 +1,37 @@
+name: Programme conformance fixtures
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  fixtures:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: |
+            lws10-vocab/package-lock.json
+            examples/mcp-adapter/package-lock.json
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Build and validate the draft context
+        working-directory: lws10-vocab
+        run: |
+          npm ci
+          npm run build
+          npm test
+      - name: Validate RDF examples and rejection vectors
+        run: |
+          python -m pip install -r conformance/requirements.txt
+          python -m unittest discover -s conformance -v
+      - name: Validate adapter credential and refresh behavior
+        working-directory: examples/mcp-adapter
+        run: |
+          npm ci
+          npm test

@@ -1,19 +1,39 @@
-### LWS Media Type
+### Representation Capabilities
 
-An LWS <a>storage description</a> MUST be serializable with the media type `application/lws+cid`.
-The `application/lws+cid` media type identifies a document that is a specialization of a W3C Controlled Identifier document [[!CID-1.0]], extended with the LWS vocabulary.
+Storage descriptions, container listings, access requests, and access grants have RDF data models. Their JSON examples use compact property names; those names and a particular nesting or array layout are required only by the fixed JSON representations below. Other representations MUST preserve the required RDF statements and constraints for the same authorized view and page. A server MUST NOT omit a policy constraint during serialization or treat a lost or unsupported constraint as satisfied.
 
-An LWS <a>container representation</a> MUST support the media type `application/lws+json`.
+A server MUST advertise its supported representations in its storage description using one or more `lws:RepresentationCapability` nodes linked by `lws:capability`. Each node MUST have:
 
-While LWS container representations use JSON-LD conventions, the constraints and requirements for LWS justify the use of a specific media type. Because LWS containers can be considered a restricted profile of JSON-LD, implementations SHOULD consider the `application/ld+json; profile="https://www.w3.org/ns/lws/v1"` media type as equivalent to `application/lws+json`.
+| RDF property | Value |
+|---|---|
+| `lws:appliesTo` | One object class: `lws:Storage`, `lws:Container`, `lws:AccessRequest`, `lws:AccessGrant`, `lws:Notification`, or `lws:WebhookSubscription` |
+| `lws:produces` | One or more concrete response media types, as strings including any required parameters |
+| `lws:accepts` | Zero or more concrete request media types; required if the scoped endpoint accepts object representations |
+| `lws:representationScope` | Zero or one endpoint IRI; absence means every object of that class in this storage; presence means the named service endpoint and objects managed by that service |
+| `lws:representationProfile` | Zero or one IRI identifying an additional layout contract, when such a guarantee is offered |
 
-#### Media Type Equivalence
+Each capability describes a supported combination, not independent lists whose cross-product may be assumed. Scope follows storage/service membership, never string-prefix matching. For an object, the applicable records are those scoped to its service if present, otherwise the unscoped records for its class. Contradictory records MUST NOT be published. Capabilities MUST reflect the current configuration; advertising a layout commits the server to producing it when its media type is selected.
 
-For <a>container representations</a>, the media types `application/lws+json`, `application/ld+json`, and `application/json` are equivalent: the response body is the same JSON-LD document conforming to the <a>container representation</a> structure defined in [](#container-representation), and only the `Content-Type` response header varies. Servers MUST honor a request for any of these media types and MUST set the `Content-Type` response header to the requested media type.
+For each implemented storage, container, access-request, and access-grant object class, a server MUST offer at least one of `text/turtle` [[!TURTLE]] and `application/ld+json` [[!JSON-LD11]], for responses and for accepted object payloads where applicable. A server MAY offer only Turtle. An RDF-capable <a>LWS Client</a> MUST support both formats for these objects, so it can retrieve discovery metadata before reading the capability list. A client supporting only the fixed JSON layout is a profile-specific client and MUST report lack of support when that profile is unavailable.
 
-Because the `Content-Type` of a container response depends on the request's `Accept` header, these responses SHOULD include a `Vary: Accept` header [[!RFC9110]].
+These requirements concern protocol-defined structured objects. They do not constrain ordinary stored payloads such as images. Linksets retain their [[!RFC9264]] representations; OAuth messages retain their OAuth formats. Optional notification suites retain their suite-defined delivery formats. The current Webhook suite requires fixed JSON notifications and subscriptions; a Turtle-only configuration therefore does not advertise that suite. Its subscription endpoint capabilities describe accepted subscription payloads, and its notification capabilities describe delivery formats rather than GET representations.
 
-**Note (non-normative):** This equivalence applies only to the three media types above. As with any HTTP resource, a server can offer additional representations of a container (for example, `text/turtle`) through standard content negotiation [[RFC9110]]; this specification neither requires nor precludes such support.
+#### Fixed JSON Representations
+
+The optional layout profile `https://www.w3.org/ns/lws#FixedJsonRepresentation` defines the following representations:
+
+- `application/lws+cid` is a storage description conforming to [[!CID-1.0]], with the LWS extensions and context sequence defined in <a href="#storage-description-representation"></a>.
+- `application/lws+json` is a container, access request, access grant, notification, or webhook subscription using the compact JSON structure defined for that object in this specification. Context terms MUST resolve to the specified vocabulary IRIs. Containers use the `items` array even when empty; access documents use the arrays and property names shown in their serialization requirements.
+
+Servers offering these media types MUST advertise the fixed JSON profile for the corresponding object classes. Servers MAY offer generic JSON-LD without this profile. The profile constrains observable structure; it does not require executing a JSON-LD framing algorithm, canonicalize JSON bytes, or define signature input.
+
+`application/ld+json` does not imply the fixed layout. `application/json` is not an alias for every RDF representation. If offered for a fixed-layout object, it MUST contain the same fixed-layout JSON-LD information and be advertised explicitly. A context URL is not implicitly a representation profile identifier. No custom parameter is added to the JSON-LD media-type registration by this specification.
+
+#### HTTP Negotiation
+
+Clients select an advertised representation using `Accept`; the fixed layout is selected by requesting its dedicated media type. Servers MUST apply [[!RFC9110]] Section 12.5.1, including media-range precedence, parameters, wildcards, and quality values. A representation excluded by its most specific matching range with `q=0` MUST NOT be selected. Among acceptable representations, servers select one of the highest-quality alternatives; ties are server-selected. With no `Accept`, any supported representation may be selected. Servers MUST return 406 when none is acceptable, and MUST return the actual selected `Content-Type`. An unsupported request representation MUST receive 415.
+
+Responses selected using `Accept` MUST include `Vary: Accept`, including applicable 304 responses. Other selection fields, such as `Accept-Encoding`, MUST also be included in `Vary` when used. Strong validators MUST NOT be shared by byte-different representations. A client using `If-Match` MUST use a strong validator for the representation to which that precondition applies; it MUST NOT assume graph equivalence makes validators interchangeable. If a transformed PUT cannot return a validator under HTTP rules, the client obtains one with a subsequent GET or HEAD before its next conditional write.
 
 
 #### Pagination
@@ -51,7 +71,7 @@ A client requests the composite resource's URI to obtain the first page. The res
 Link headers that the client follows to retrieve subsequent pages. Servers MAY also support
 direct access to specific pages via the pagination URIs obtained during a previous scan.
 
-When a paginated response is returned, the server MUST respond with 200 OK. The `totalItems`
+For a successful full GET of a page, the server responds with 200 OK; conditional requests remain subject to HTTP preconditions. The `totalItems`
 property in the response body SHOULD reflect the total number of items across all pages, not just the current page.
 
 ##### Example: Paginated Container

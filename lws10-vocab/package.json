@@ -2,9 +2,11 @@
   "name": "lws-vocab",
   "private": true,
   "scripts": {
-    "build": "yml2vocab -v vocabulary -t template.html -c && mv vocabulary.html index.html"
+    "build": "node build.mjs",
+    "test": "node --test"
   },
   "devDependencies": {
+    "jsonld": "9.0.0",
     "yml2vocab": "^1"
   }
 }

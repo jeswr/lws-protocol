@@ -1,0 +1,10 @@
+node_modules/
+__pycache__/
+.venv/
+conformance/results/
+lws10-vocab/index.html
+lws10-vocab/vocabulary.html
+lws10-vocab/vocabulary.ttl
+lws10-vocab/vocabulary.jsonld
+lws10-vocab/vocabulary.context.jsonld
+*.bootstrap.json

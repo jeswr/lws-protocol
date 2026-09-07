@@ -1,0 +1,9 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix lws: <https://www.w3.org/ns/lws#> .
+@prefix did: <https://www.w3.org/ns/did#> .
+<https://storage.example/> a lws:Storage ;
+    did:service <https://storage.example/#root-service> ;
+    lws:capability [ a lws:RepresentationCapability ; lws:appliesTo lws:Storage ; lws:produces "text/turtle"^^xsd:string ],
+      [ a lws:RepresentationCapability ; lws:appliesTo lws:Storage ; lws:produces "application/lws+cid"^^xsd:string ; lws:representationProfile lws:FixedJsonRepresentation ],
+      [ a lws:RepresentationCapability ; lws:appliesTo lws:Container ; lws:produces "text/turtle"^^xsd:string ] .
+<https://storage.example/#root-service> a lws:StorageRoot ; did:serviceEndpoint <https://storage.example/root/> .

@@ -1,6 +1,14 @@
 ### Container Representation
 
-When a client retrieves a <a>container</a>, the server returns a structured <dfn>container representation</dfn> describing the <a>container</a> and its contents. This section defines the required and optional properties of a container representation.
+When a client retrieves a <a>container</a>, the server returns a structured <dfn>container representation</dfn> describing the <a>container</a> and its contents.
+
+#### RDF Data Model
+
+The representation MUST identify the container by its URI and assert its `rdf:type` as `lws:Container`. It MUST have one `lws:totalItems` non-negative integer counting the resources disclosable to this client (an approximation is permitted as described below). Each `lws:items` value MUST identify a contained resource on the current authorized page. Membership is unordered; an empty page has no `lws:items` statements. Each member MUST have `rdf:type` `lws:DataResource` or `lws:Container`, and MAY have additional types. Data resources MUST have `dcterms:format` as a media-type string. Members SHOULD have `schema:size` as a non-negative byte count and `dcterms:modified` as an `xsd:dateTime` value.
+
+Here `lws:` expands to `https://www.w3.org/ns/lws#`, `dcterms:` to `http://purl.org/dc/terms/`, and `schema:` to `https://schema.org/`. A representation MUST NOT imply that omitted resources are absent from storage: authorization and pagination may hide them. Representation capabilities and selection are defined in <a href="#lws-media-type"></a>.
+
+The remaining property names and JSON layout requirements in this section apply when the optional fixed JSON representation is selected. RDF serializations use the model above without requiring those aliases or that nesting.
 
 #### Container Properties
 

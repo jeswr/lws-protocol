@@ -1,156 +1,46 @@
 <section id="storage-description">
   <h3>Storage Description Resource</h3>
-
-  <p>
-    A <a>storage description resource</a> provides information a client can use
-    when interacting with a <a>storage</a>, including descriptions of capabilities and
-    service endpoints.
-  </p>
+  <p>A <a>storage description resource</a> describes a storage, its capabilities, and its service endpoints. Its abstract model is RDF. The optional fixed JSON representation is a specialization of a Controlled Identifier document [[!CID-1.0]]. Other representations do not claim to be CID documents.</p>
 
   <section id="storage-description-data-model">
     <h4>Data Model</h4>
-
-    <p>
-      A <a>storage description resource</a> is a specialization of a W3C Controlled Identifier document [[!CID-1.0]].
-      It conforms to the data model defined by [[!CID-1.0]], extended with LWS-specific properties.
-    </p>
-
-    <ul>
-      <li>
-        <strong>`id`</strong> - the <code>id</code> property is REQUIRED. Its value MUST be the canonical URI of the <a>storage</a>.
-        Per [[!CID-1.0]], this URI is also the canonical URL of the controlled identifier document.
-      </li>
-      <li>
-        <strong>`type`</strong> - the <code>type</code> property is REQUIRED. Its value MUST be a string that equals
-        <code>Storage</code> or a set of strings that contains an item equal to <code>Storage</code> (case-sensitive).
-      </li>
-      <li>
-        <strong>`capability`</strong> - the <code>capability</code> property is OPTIONAL. Its value MUST be a set of
-        capabilities, where each capability is described by a map containing the following properties.
-        Additional properties MAY be present.
-        <ul>
-          <li><strong>`id`</strong> - the <code>id</code> property is OPTIONAL. If present, its value MUST be a URI.</li>
-          <li><strong>`type`</strong> - the <code>type</code> property is REQUIRED. Its value MUST be a string or a set of strings.</li>
-        </ul>
-      </li>
-      <li>
-        <strong>`service`</strong> - the <code>service</code> property is REQUIRED. Its value MUST be a set of services,
-        where each service is described by a map containing the following properties. Additional properties MAY be present.
-        The set MUST contain a service whose <code>type</code> equals <code>StorageRoot</code>.
-        <ul>
-          <li><strong>`id`</strong> - the <code>id</code> property is OPTIONAL. If present, its value MUST be a URI.</li>
-          <li><strong>`type`</strong> - the <code>type</code> property is REQUIRED. Its value MUST be a string or a set of strings.</li>
-          <li><strong>`serviceEndpoint`</strong> - the <code>serviceEndpoint</code> property is REQUIRED. Its value MUST be a URI.</li>
-        </ul>
-      </li>
-    </ul>
-
-    <pre id="example-storage-description-minimal" class="example" title="Minimum storage description resource">
-{
-  "@context": [
-    "https://www.w3.org/ns/cid/v1",
-    "https://www.w3.org/ns/lws/v1"
-  ],
-  "id": "https://storage.example/",
-  "type": "Storage",
-  "service": [{
-    "type": "StorageRoot",
-    "serviceEndpoint": "https://storage.example/root/"
-  }]
-}
-    </pre>
+    <p>The node identifying the storage MUST be its canonical URI and MUST have <code>rdf:type</code> <code>lws:Storage</code>. It MUST link through <code>did:service</code> to a service of type <code>lws:StorageRoot</code>. Exactly one such root service MUST be present. Each service MUST have an IRI identifier, one or more types, and a <code>did:serviceEndpoint</code> IRI. Other services MAY be present.</p>
+    <p>The prefixes <code>lws:</code> and <code>did:</code> expand to <code>https://www.w3.org/ns/lws#</code> and <code>https://www.w3.org/ns/did#</code>. The latter service properties are the RDF mappings used by the CID context. A storage's capabilities are linked using <code>lws:capability</code>; each capability MUST have a type and MAY have an IRI identifier and extension properties.</p>
+    <p>Representation capabilities MUST be supplied for the storage description and containers, and for access request/grant objects when those services are implemented. The Storage and Container classes MUST each have an unscoped baseline capability; service-scoped records may override it for their service. Implemented notification suites MUST advertise capabilities for their notification and subscription classes, subject to the suite-defined formats. The requirements in <a href="#lws-media-type"></a> define their scope and meaning.</p>
   </section>
 
   <section id="storage-description-binding">
     <h4>Discovery and Binding</h4>
-
-    <p>
-      All responses to <code>GET</code> and <code>HEAD</code> requests targeting <a>storage</a> resources MUST include a
-      <code>Link</code> header whose target is the canonical URI of the <a>storage</a>, including a relation
-      (<code>rel</code>) parameter whose value equals <code>https://www.w3.org/ns/lws#storage</code>.
-    </p>
-
-    <p>
-      Requests for the <a>storage</a> URI MUST return a document that conforms to the
-      <a>storage description resource</a> data model with a media type of <code>application/lws+cid</code>,
-      unless content negotiation requires a different format.
-    </p>
+    <p>Responses to GET and HEAD on storage resources MUST include a <code>Link</code> header targeting the canonical storage URI, with <code>rel="https://www.w3.org/ns/lws#storage"</code>. This relation identifies storage membership independently of path layout.</p>
+    <p>A GET on that URI MUST return the storage description using HTTP content negotiation. A client retrieving it for the first time MUST advertise the formats it can process, including <code>text/turtle</code> and <code>application/ld+json</code> for an RDF-capable client. Discovery does not require the client to read the capability list before making that request. A profile-specific client with no supported alternative MUST report a 406 response as an incompatible configuration.</p>
   </section>
 
   <section id="storage-description-capabilities">
     <h4>Storage Capabilities</h4>
+    <p>The following Turtle-only configuration advertises representations for its description and container listings. This is a non-normative example; access services add their own representation records when implemented.</p>
+    <pre class="example" title="Turtle-only storage description">
+@prefix lws: &lt;https://www.w3.org/ns/lws#&gt; .
+@prefix did: &lt;https://www.w3.org/ns/did#&gt; .
 
-    <p>
-      A <a>storage description</a> may contain descriptions of additional capabilities supported by the <a>storage</a>.
-    </p>
+&lt;https://storage.example/&gt; a lws:Storage ;
+    did:service &lt;https://storage.example/#root-service&gt; ;
+    lws:capability [ a lws:RepresentationCapability ;
+        lws:appliesTo lws:Storage ; lws:produces "text/turtle" ],
+      [ a lws:RepresentationCapability ;
+        lws:appliesTo lws:Container ; lws:produces "text/turtle" ] .
+&lt;https://storage.example/#root-service&gt; a lws:StorageRoot ;
+    did:serviceEndpoint &lt;https://storage.example/root/&gt; .
+    </pre>
   </section>
 
   <section id="storage-description-services">
     <h4>Storage Services</h4>
-
-    <p>
-      A <a>storage description resource</a> MUST contain a <code>StorageRoot</code> service whose
-      <code>serviceEndpoint</code> is the URI of the <a>storage root</a> container.
-      Additional services connected to a <a>storage</a> MAY also be present.
-      The API definition of these additional services are outside the scope of this specification.
-    </p>
+    <p>The root service's endpoint MUST be the URI of the <a>storage root</a> container. An access service MUST advertise its supported policy profiles using <code>dcterms:conformsTo</code>. A policy profile and a representation profile are independent: the same policy may be exchanged in Turtle or JSON-LD.</p>
   </section>
 
   <section id="storage-description-representation">
     <h4>Storage Description Representation</h4>
-
-    <p>
-      A <a>storage description</a> MUST be serializable with the media type <code>application/lws+cid</code>.
-      The <code>@context</code> property MUST be an array starting with the URIs <code>https://www.w3.org/ns/cid/v1</code>
-      and <code>https://www.w3.org/ns/lws/v1</code>.
-      Other representations MAY be available via content negotiation.
-    </p>
-
-    <pre id="example-storage-description-resource" class="example" title="Storage description resource">
-{
-  "@context": [
-    "https://www.w3.org/ns/cid/v1",
-    "https://www.w3.org/ns/lws/v1"
-  ],
-  "id": "https://storage.example/",
-  "type": "Storage",
-  "capability": [{
-    "type": "https://feature.example/PatchSupport",
-    "format": {
-      "text/turtle": ["application/sparql-update"],
-      "application/n-triples": ["application/sparql-update"],
-      "application/linkset+json": ["application/merge-patch+json", "application/json-patch+json"]
-    }
-  }, {
-    "type": "https://feature.example/ResumableUploads"
-  }, {
-    "type": "https://feature.example/ContentNegotiation",
-    "source": "application/ld+json",
-    "target": ["text/turtle", "application/n-triples"]
-  }, {
-    "type": "https://feature.example/ContentNegotiation",
-    "source": "image/jpeg",
-    "target": ["image/png"]
-  }],
-  "service": [{
-    "type": "StorageRoot",
-    "serviceEndpoint": "https://storage.example/root/"
-  }, {
-    "type": "NotificationService",
-    "serviceEndpoint": "https://storage.example/notification/api",
-    "subscriptionType": ["WebhookSubscription"]
-  }, {
-    "type": "TypeIndexService",
-    "serviceEndpoint": "https://storage.example/types/index"
-  }, {
-    "type": "TypeSearchService",
-    "serviceEndpoint": "https://storage.example/types/search"
-  }, {
-    "type": "DataSharingService",
-    "serviceEndpoint": "https://storage.example/sharing/api"
-  }]
-}
-    </pre>
+    <p>When <code>application/lws+cid</code> is offered, the document MUST conform to [[!CID-1.0]] and the RDF model above. Its <code>@context</code> array MUST begin with <code>https://www.w3.org/ns/cid/v1</code> and <code>https://www.w3.org/ns/lws/v1</code>, in that order. The JSON keys <code>id</code>, <code>type</code>, <code>service</code>, <code>serviceEndpoint</code>, and <code>capability</code> represent the corresponding identifiers, types, service relations, endpoints, and capabilities. <code>service</code> and <code>capability</code> MUST be arrays, even for a single entry. Service objects MUST include <code>id</code>, <code>type</code>, and <code>serviceEndpoint</code>. Other RDF serializations have no <code>@context</code> or JSON array requirement.</p>
+    <p class="note">The versioned LWS context must be published with the vocabulary additions before deploying this draft's fixed JSON format. The conformance fixtures bundle the draft context and resolve it locally; they do not depend on an unpublished change at the W3C URL.</p>
   </section>
 </section>
-

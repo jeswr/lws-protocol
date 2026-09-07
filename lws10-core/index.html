@@ -35,7 +35,7 @@
         // It is OK to have unused definition in a Working Draft
         // In the editors' draft we keep these warnings for awareness.
         // And of course, we keep them in more mature state, as we don't want them to exist in the end.
-        if (cfg.specStatus === "FPWD" || cfg.specSTatus === "WD") {
+        if (cfg.specStatus === "FPWD" || cfg.specStatus === "WD") {
           respecConfig.lint['no-unused-dfns'] = false;
         }
       }
@@ -107,9 +107,7 @@
 
     <section id="conventions" class="informative">
       <h2>Document Conventions</h2>
-      <dl>
-        <dt></dt><dd></dd>
-      </dl>
+      <p>Examples, notes, and sections marked informative do not establish conformance requirements. Compact JSON names denote vocabulary terms; fixed JSON layout requirements apply only when that representation is selected. References to HTTP concern its semantics across supported protocol versions.</p>
     </section>
 
     <section id="introduction">
@@ -172,11 +170,11 @@
       <section id="conformance">
         <!-- Respec automagically adds the heading. -->
         <p>
-          A <dfn>LWS Server</dfn> is an HTTP server [[!rfc9112]] that complies with all of the relevant "MUST" statements in this specification. Specifically, the relevant normative "MUST" statements in <a href="#operations"></a> of this document MUST be respected.
+          A <dfn>LWS Server</dfn> is an HTTP server that satisfies the requirements addressed to servers in this specification and its normative dependencies, including [[!RFC9110]] and [[!RFC9111]]. Requirements for an optional feature apply when that feature is supported or advertised. A conformance claim MUST identify the implemented authentication suites, access profiles, representation capabilities, and optional operations. It MUST NOT imply support for every extension.
         </p>
 
         <p>
-          An <dfn>LWS Client</dfn> is an HTTP client [[!rfc9112]] that complies with all of the relevant "MUST" statements in this specification. Specifically, the relevant normative "MUST" statements in <a href="#operations"></a> of this document MUST be respected.
+          An <dfn>LWS Client</dfn> satisfies the requirements addressed to clients for the operations and suites it implements. Its claim MUST identify whether it is RDF-capable (supporting the baseline formats in <a href="#lws-media-type"></a>) or profile-specific (requiring an advertised fixed JSON representation). A profile-specific claim does not imply interoperability with every conforming server. A claim MUST state any departures from SHOULD-level recommendations and their reasons.
         </p>
       </section>
 
@@ -239,11 +237,11 @@
         <li><dfn data-lt="data resources">data resource</dfn> &mdash; a data-bearing <a>LWS resource</a> such as a document, image, or structured information whose support for update and delete operations follows the requirements outlined in <a href="#operations">Section 9. Operations</a>.</li>
         <li><dfn>containment</dfn> &mdash; the relationship between a <a>container</a> and the <a>LWS resources</a> whose lifecycle the <a>container</a> manages.</li>
         <li><dfn>linkset resource</dfn> &mdash; a type of <a>auxiliary resource</a> whose representation conforms to [[[RFC9264]]]. Update operations for linkset resources follow the requirements outlined in <a href="#operations">Section 9. Operations</a>.</li>
-        <li><dfn>metadata resource</dfn> &mdash; an <a>auxiliary resource</a>, managed by a <a>storage</a>, that describes an <a>LWS resource</a> and conforms to the conventions described in <a href="todo-metadata-resource">TBD</a>. The lifecycle of a metadata resource is bound to the <a>LWS resource</a> it describes.</li>
+        <li><dfn>metadata resource</dfn> &mdash; an <a>auxiliary resource</a>, managed by a <a>storage</a>, that describes an <a>LWS resource</a> and conforms to the conventions described in <a href="#metadata">Metadata</a>. The lifecycle of a metadata resource is bound to the <a>LWS resource</a> it describes.</li>
         <li><dfn data-cite="webarch#def-resource">resource</dfn> &mdash; a resource is, as described by [[WebArch]] and [[RFC3986]], “whatever might be identified by a URI”. Resources whose essential characteristics can be conveyed in a message (such as web pages, images, structured data objects...) are called <dfn data-cite="webarch#def-information-resource">information resources</dfn> [[WebArch]].
         <li><dfn>storage</dfn> &mdash; a set of hierarchically organized HTTP resources whose lifecycle is managed by the conventions described by the Linked Web Storage Protocol. A storage is described by a <a>storage description resource</a> which references a collection of services that provide affordances over those resources.</li>
         <li><dfn>storage controller</dfn> &mdash; an <a>agent</a> that controls all resources in a <a>storage</a>.</li>
-        <li><dfn data-lt="storage description resource">storage description</dfn> &mdash; an <a>LWS resource</a>, conforming to the requirements of a W3C Controlled Identifier document [[!CID-1.0]], that describes a <a>storage</a> along with its services and capabilities.</li>
+        <li><dfn data-lt="storage description resource">storage description</dfn> &mdash; an <a>LWS resource</a> that describes a <a>storage</a> along with its services and capabilities, using the RDF model and optional CID representation in <a href="#storage-description"></a>.</li>
         <li><dfn>storage root</dfn> &mdash; a <a>container</a> at the root of a <a>containment</a> hierarchy of a <a>storage</a>. The storage root is the only <a>LWS resource</a> that does not have a parent in the LWS <a>containment</a> hierarchy nor a <a>primary resource</a>.</li>
         <li><dfn data-lt="notifications">notification</dfn> &mdash; a message describing an event that has occurred on a resource.</li>
         <li><dfn data-lt="subscriptions">subscription</dfn> &mdash; a registration expressing interest in receiving notifications for a given resource or set of resources.</li>
@@ -305,7 +303,7 @@
 	  <div data-include="operations.md" data-include-format="markdown" data-include-replace="true"></div>
 	  
 	  <div data-include="Operations/restbinding.md" data-include-format="markdown" data-include-replace="true"></div>
-	  <div data-include="Operations/metadata.md" data-include-format="markdown" data-include-replace="true"></div>
+	  <section id="metadata" data-include="Operations/metadata.md" data-include-format="markdown"></section>
 
       <section id="create-resource">
         <h2>Create resource</h2>

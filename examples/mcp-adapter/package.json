@@ -1,0 +1,8 @@
+{
+  "name": "lws-mcp-adapter-experiment",
+  "private": true,
+  "type": "module",
+  "engines": {"node": ">=22"},
+  "scripts": {"test": "node --test", "start": "node adapter.mjs", "smoke": "node smoke.mjs"},
+  "dependencies": {"@modelcontextprotocol/sdk": "1.30.0"}
+}

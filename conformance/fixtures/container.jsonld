@@ -1,0 +1,13 @@
+{
+  "@context": "https://www.w3.org/ns/lws/v1",
+  "id": "https://storage.example/root/",
+  "type": "Container",
+  "totalItems": 1,
+  "items": [{
+    "id": "https://storage.example/root/report",
+    "type": "DataResource",
+    "format": "text/plain",
+    "size": 58,
+    "modified": "2026-09-06T12:00:00Z"
+  }]
+}

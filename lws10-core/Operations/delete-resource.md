@@ -15,7 +15,7 @@ When a resource is deleted, the server MUST atomically remove it from its parent
 
 For non-container resources, the server removes the resource content, its associated metadata (<a>linkset resource</a>), and the <a>containment</a> reference in the parent <a>container</a>.
 
-For <a>container</a> resources, the server defaults to non-recursive deletion. If the <a>container</a> is not empty and recursion is not requested, the server MUST reject the request with 409 Conflict. Servers MAY support recursive deletion of all contained resources within the <a>container</a> that is being deleted. Clients MUST use the `Depth: infinity` header to request for a recursive delete, as defined in [[RFC4918]].
+For <a>container</a> resources, the server defaults to non-recursive deletion. If the <a>container</a> is not empty and recursion is not requested, the server MUST reject the request with 409 Conflict. Servers MAY support recursive deletion of all contained resources within the <a>container</a> that is being deleted. The LWS extension uses `Depth: infinity` to request recursion. This differs from WebDAV DELETE semantics [[RFC4918]] and does not establish WebDAV conformance. Servers MUST authorize every affected resource before an atomic recursive deletion; an unsupported recursive request MUST NOT be treated as a successful recursive delete.
 
 On success, the server MUST respond with 204 No Content. Servers SHOULD support conditional requests, as defined in [[RFC9110]].
 

@@ -2,7 +2,7 @@
   <h3>well-known URI Registry</h3>
 
   <p>
-    This specification adds the following value to the "Well-Known URIs" <a href="https://www.iana.org/assignments/well-known-uris/well-known-uris.xhtml">registry</a> established by RFC 5785 [[RFC5785]].
+    This specification requests registration of the following value to the "Well-Known URIs" <a href="https://www.iana.org/assignments/well-known-uris/well-known-uris.xhtml">registry</a> maintained under [[RFC8615]].
   </p>
 
   <ul>
@@ -13,7 +13,7 @@
       Change controller: W3C
     </li>
     <li>
-      Specification document: Section 5 of LWS-Auth
+      Specification document: <a href="#authorization-server-metadata">Authorization Server Metadata</a>
     </li>
     <li>
       Related information: (none)
@@ -25,7 +25,7 @@
   <h3>OAuth Authorization Server Metadata Registry</h3>
 
   <p>
-    This specification adds the following value to the "OAuth Authorization Server Metadata" <a href="https://www.iana.org/assignments/oauth-parameters/oauth-parameters.xhtml">registry</a> established by [[RFC8414]].
+    This specification requests registration of the following value to the "OAuth Authorization Server Metadata" <a href="https://www.iana.org/assignments/oauth-parameters/oauth-parameters.xhtml">registry</a> established by [[RFC8414]].
   </p>
 
   <ul>
@@ -39,17 +39,18 @@
       Change Controller: W3C
     </li>
     <li>
-      Specification Document(s): Section 5 of LWS-Auth
+      Specification Document(s): <a href="#authorization-server-metadata">Authorization Server Metadata</a>
     </li>
   </ul>
 </section>
 
 <section id="iana-media-type-registry">
   <h3>The <code>application/lws+json</code> Media Type</h3>
+  <p>The following registration templates follow [[RFC6838]] Section 5.6 and are subject to standards-tree review.</p>
 
   <p>
-    This specification registers the <code>application/lws+json</code> media type specifically for identifying documents
-    conforming to the Linked Web Storage container format.
+    This specification requests registration of the <code>application/lws+json</code> media type specifically for identifying documents
+    conforming to the fixed JSON layout for LWS containers, access requests, access grants, notifications, or webhook subscriptions.
   </p>
 
   <ul>
@@ -62,16 +63,28 @@
     <li>
       Required parameters: None
     </li>
+    <li>Optional parameters: None</li>
+    <li>Interoperability considerations: Uses JSON-LD vocabulary mappings with the additional fixed layouts defined in <a href="#lws-media-type"></a>. Arbitrary JSON or JSON-LD does not imply this profile.</li>
+    <li>Fragment identifier considerations: The +json suffix rules in [[RFC6839]] apply. This media type defines no additional fragment syntax; JSON Pointer semantics are not implied.</li>
+    <li>Published specification: This specification, <a href="https://www.w3.org/TR/lws10-core/">Linked Web Storage Protocol 1.0</a> (Working Draft; registration remains proposed).</li>
+    <li>Applications that use this media type: Linked Web Storage clients and servers implementing the advertised fixed JSON representation.</li>
+    <li>Additional information: Deprecated alias names: none; magic numbers: none; file extensions: none specified; Macintosh file type codes: none specified.</li>
+    <li>Intended usage: COMMON</li>
+    <li>Restrictions on usage: None.</li>
+    <li>Author: W3C Linked Web Storage Working Group.</li>
+    <li>Change controller: W3C.</li>
+    <li>Provisional registration: No.</li>
+
     <li>
       Encoding considerations: Resources that use the <code>application/lws+json</code> media type are required to conform to
       all of the requirements for the <code>application/json</code> media type and are therefore subject to the same encoding
       considerations specified in Section 11 of [[RFC8259]].
     </li>
     <li>
-      Security considerations: As defined in this specification.
+      Security considerations: See <a href="#security-considerations"></a> and <a href="#privacy-considerations"></a>. JSON-LD context processing MUST preserve policy constraints and MUST NOT grant authority to untrusted remote contexts.
     </li>
     <li>
-      Contact: W3C Linked Web Storage Working Group &lt;public-lws-wg@w3.org&gt;
+      Person and email address to contact for further information: W3C Linked Web Storage Working Group &lt;public-lws-wg@w3.org&gt;
     </li>
   </ul>
 
@@ -80,18 +93,14 @@
     requirements for LWS implementations that justify the use of a specific media type.
   </p>
 
-  <p>
-    Because LWS containers can be considered a restricted profile of JSON-LD, implementations SHOULD consider the
-    <code>application/ld+json; profile="https://www.w3.org/ns/lws/v1"</code> media type as equivalent to
-    <code>application/lws+json</code>.
-  </p>
+  <p>Support for this representation is optional and advertised as defined in <a href="#lws-media-type"></a>. Generic JSON-LD and JSON media types do not imply this layout.</p>
 </section>
 
 <section id="iana-media-type-cid-registry">
   <h3>The <code>application/lws+cid</code> Media Type</h3>
 
   <p>
-    This specification registers the <code>application/lws+cid</code> media type for identifying
+    This specification requests registration of the <code>application/lws+cid</code> media type for identifying
     storage description documents conforming to the Linked Web Storage protocol as a specialization
     of the W3C Controlled Identifiers 1.0 document format.
   </p>
@@ -100,13 +109,25 @@
     <li>Type name: application</li>
     <li>Subtype name: lws+cid</li>
     <li>Required parameters: None</li>
+    <li>Optional parameters: None</li>
+    <li>Interoperability considerations: A specialization of [[CID-1.0]] with the LWS storage description model and context sequence; see <a href="#storage-description-representation"></a>.</li>
+    <li>Fragment identifier considerations: Follows the CID fragment semantics in [[CID-1.0]]. No additional LWS fragment syntax is defined.</li>
+    <li>Published specification: This specification, <a href="https://www.w3.org/TR/lws10-core/">Linked Web Storage Protocol 1.0</a> (Working Draft; registration remains proposed).</li>
+    <li>Applications that use this media type: Linked Web Storage clients and servers implementing the advertised fixed JSON representation.</li>
+    <li>Additional information: Deprecated alias names: none; magic numbers: none; file extensions: none specified; Macintosh file type codes: none specified.</li>
+    <li>Intended usage: COMMON</li>
+    <li>Restrictions on usage: None.</li>
+    <li>Author: W3C Linked Web Storage Working Group.</li>
+    <li>Change controller: W3C.</li>
+    <li>Provisional registration: No.</li>
+
     <li>
       Encoding considerations: Resources that use the <code>application/lws+cid</code> media type
       are required to conform to all of the requirements for the <code>application/json</code>
       media type and are therefore subject to the same encoding considerations specified in
       Section 11 of [[RFC8259]].
     </li>
-    <li>Security considerations: As defined in this specification</li>
-    <li>Contact: W3C Linked Web Storage Working Group &lt;public-lws-wg@w3.org&gt;</li>
+    <li>Security considerations: See <a href="#security-considerations"></a>, <a href="#privacy-considerations"></a>, and [[CID-1.0]]. A storage description does not itself establish trust in an issuer.</li>
+    <li>Person and email address to contact for further information: W3C Linked Web Storage Working Group &lt;public-lws-wg@w3.org&gt;</li>
   </ul>
 </section>
