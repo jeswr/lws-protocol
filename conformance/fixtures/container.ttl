@@ -1,0 +1,9 @@
+@prefix lws: <https://www.w3.org/ns/lws#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+<https://storage.example/root/> a lws:Container ; lws:totalItems 1 ;
+    lws:items <https://storage.example/root/report> .
+<https://storage.example/root/report> a lws:DataResource ;
+    dct:format "text/plain" ; schema:size "58"^^xsd:long ;
+    dct:modified "2026-09-06T12:00:00Z"^^xsd:dateTime .

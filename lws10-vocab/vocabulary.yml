@@ -6,16 +6,24 @@ vocab:
 prefix:
   - id: as
     value: https://www.w3.org/ns/activitystreams#
+
   - id: schema
     value: https://schema.org/
+
   - id: dct
     value: http://purl.org/dc/terms/
+
   - id: dcterms
     value: http://purl.org/dc/terms/
+
   - id: ldp
     value: http://www.w3.org/ns/ldp#
+
   - id: odrl
     value: http://www.w3.org/ns/odrl/2/
+
+  - id: sdo
+    value: https://schema.org/
 
 ontology:
   - property: dc:title
@@ -84,16 +92,40 @@ class:
     label: Access Request Service
     comment: A service endpoint for managing access requests.
 
+  - id: AccessRequest
+    label: Access Request
+    comment: A request for access; submission alone confers no authority.
+
+  - id: StorageResource
+    label: Storage Resource
+    comment: A resource managed by a storage.
+
+  - id: RepresentationCapability
+    label: Representation Capability
+    comment: Supported content types and an optional layout guarantee for one object class and service scope.
+
+  - id: AuthorizationBindingCapability
+    label: Authorization Binding Capability
+    comment: The authoritative authorization binding and executable subset configured for a storage scope.
+
+  - id: rdfs:Resource
+    label: Resource
+    external: true
+    comment: An RDF resource, as defined by RDF Schema.
+
 property:
   - id: items
     label: items
     domain: lws:Container
-    comment: The list of resources contained in a container.
+    comment: Unordered membership statements for the current authorized page of a container listing.
+    container: set
+    range: rdfs:Resource
 
   - id: totalItems
     label: total items
     domain: lws:Container
     comment: The total number of items in a container.
+    range: xsd:integer
 
   - id: dct:format
     label: format
@@ -106,7 +138,7 @@ property:
     range: xsd:dateTime
     comment: The date and time the resource was last modified.
 
-  - id: schema:size
+  - id: sdo:size
     label: size
     domain: lws:DataResource
     range: xsd:long
@@ -116,6 +148,8 @@ property:
     label: capability
     domain: lws:Storage
     comment: A capability supported by the storage.
+    container: set
+    range: rdfs:Resource
 
   - id: PreferLinkRelations
     label: Prefer Link Relations
@@ -147,7 +181,7 @@ property:
 
   - id: storage
     label: storage
-    range: xsd:anyURI
+    range: rdfs:Resource
     comment: The canonical URI identifying an LWS storage.
 
   - id: as:Create
@@ -163,10 +197,12 @@ property:
     comment: An activity representing the deletion of a resource.
 
   - id: as:object
+    range: rdfs:Resource
     label: object
     comment: The primary object of an activity.
 
   - id: as:actor
+    range: rdfs:Resource
     label: actor
     comment: The agent that performed the activity.
 
@@ -175,6 +211,7 @@ property:
     comment: The target of the activity.
 
   - id: as:origin
+    range: rdfs:Resource
     label: origin
     comment: The origin of a Move activity.
 
@@ -185,10 +222,10 @@ property:
 
   - id: ldp:inbox
     label: inbox
-    range: xsd:anyURI
+    range: rdfs:Resource
     comment: A URL to which notifications are delivered via HTTP POST.
 
-  - id: schema:expires
+  - id: sdo:expires
     label: expires
     range: xsd:dateTime
     comment: The date and time at which a subscription expires.
@@ -196,74 +233,137 @@ property:
   - id: access
     label: access
     comment: The access policies associated with an access request or grant.
+    container: set
+    range: rdfs:Resource
 
   - id: dcterms:conformsTo
     label: conforms to
     external: true
     comment: An established standard to which the described resource conforms.
+    range: rdfs:Resource
 
   - id: odrl:action
     label: action
-    domain: lws:AccessPolicy
     external: true
     comment: The operation relating to the asset of the rule.
     one_of:
-      - odrl:read
-      - odrl:modify
-      - odrl:delete
-      - create
+    - odrl:read
+    - odrl:modify
+    - odrl:delete
+    - create
 
   - id: odrl:assignee
     label: assignee
-    domain: lws:AccessPolicy
     external: true
     comment: The party that is assigned the rule.
+    range: rdfs:Resource
 
   - id: odrl:target
     label: target
-    domain: lws:AccessPolicy
     external: true
     comment: The asset that is the target of the rule.
+    range: rdfs:Resource
 
   - id: odrl:constraint
     label: constraint
-    domain: lws:AccessPolicy
     external: true
     comment: A constraint that refines the semantics of an action or rule.
 
   - id: odrl:leftOperand
     label: left operand
-    domain: lws:AccessPolicy
     external: true
     comment: The left operand of a constraint.
     one_of:
-      - odrl:purpose
-      - odrl:dateTime
-      - client
-      - dcterms:type
-      - dcterms:format
+    - odrl:purpose
+    - odrl:dateTime
+    - client
+    - dcterms:type
+    - dcterms:format
 
   - id: odrl:operator
     label: operator
-    domain: lws:AccessPolicy
     external: true
     comment: The operator of a constraint.
     one_of:
-      - odrl:eq
-      - odrl:neq
-      - odrl:lt
-      - odrl:gt
-      - odrl:lteq
-      - odrl:gteq
-      - odrl:isAnyOf
-      - odrl:isAllOf
-      - odrl:isNoneOf
+    - odrl:eq
+    - odrl:neq
+    - odrl:lt
+    - odrl:gt
+    - odrl:lteq
+    - odrl:gteq
+    - odrl:isAnyOf
+    - odrl:isAllOf
+    - odrl:isNoneOf
 
   - id: odrl:rightOperand
     label: right operand
-    domain: lws:AccessPolicy
     external: true
     comment: The right operand of a constraint.
+
+  - id: appliesTo
+    label: applies to
+    range: rdfs:Resource
+    comment: The object class covered by a representation capability.
+
+  - id: produces
+    label: produces
+    range: xsd:string
+    comment: A supported response media type, including required parameters.
+
+  - id: accepts
+    label: accepts
+    range: xsd:string
+    comment: A supported request media type, including required parameters.
+
+  - id: representationScope
+    label: representation scope
+    range: rdfs:Resource
+    comment: The service endpoint to which a representation capability applies; omission denotes storage-wide
+      class support.
+
+  - id: representationProfile
+    label: representation profile
+    range: rdfs:Resource
+    comment: An additional layout contract guaranteed by an advertised representation.
+
+  - id: authorizationBinding
+    label: authorization binding
+    range: rdfs:Resource
+    comment: The authoritative policy-language binding configured by the server.
+
+  - id: supportedAction
+    label: supported action
+    range: rdfs:Resource
+    comment: An action implemented by the advertised executable authorization subset.
+
+  - id: value
+    label: value
+    range: rdfs:Resource
+    comment: A resource identifier in the legacy LWS access target model.
+
+  - id: odrl:permission
+    label: permission
+    range: rdfs:Resource
+    comment: A Permission in an ODRL Policy.
+    external: true
+
+  - id: odrl:prohibition
+    label: prohibition
+    range: rdfs:Resource
+    comment: A Prohibition in an ODRL Policy.
+    external: true
+
+  - id: odrl:profile
+    label: profile
+    range: rdfs:Resource
+    comment: The ODRL profile to which a policy conforms.
+    external: true
+
+  - id: odrl:conflict
+    label: conflict
+    range: rdfs:Resource
+    comment: The explicit ODRL conflict strategy.
+    external: true
 
 individual:
   - id: create
@@ -273,6 +373,27 @@ individual:
   - id: client
     label: client
     comment: A left operand representing the client identifier for an HTTP request.
+
+  - id: FixedJsonRepresentation
+    label: Fixed JSON Representation
+    comment: The optional fixed JSON layout defined by LWS; this draft identifier is subject to WG review.
+
+  - id: OdrlAccessProfile
+    label: ODRL Access Profile
+    comment: The ODRL access-request and grant profile defined by the companion specification; this draft identifier
+      is subject to WG review.
+
+  - id: WacAuthorization
+    label: WAC Authorization
+    comment: The optional WAC authorization binding.
+
+  - id: AcpAuthorization
+    label: ACP Authorization
+    comment: The optional ACP authorization binding.
+
+  - id: OdrlAuthorization
+    label: ODRL Authorization
+    comment: The optional ODRL authorization binding.
 
 json_ld:
   alias:

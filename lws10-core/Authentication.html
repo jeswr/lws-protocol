@@ -18,9 +18,9 @@
   </p>
 
   <ul>
-    <li><dfn>subject</dfn> <strong>REQUIRED</strong> &mdash; an identifier for an end user. This MUST be a URI.</li>
+    <li><dfn>subject</dfn> <strong>REQUIRED</strong> &mdash; an identifier for an <a>agent</a>, including a person or software principal. This MUST be a URI.</li>
     <li><dfn>issuer</dfn> <strong>REQUIRED</strong> &mdash; an identifier for the entity that issued the <a>authentication credential</a>. This MUST be a URI.</li>
-    <li><dfn>client</dfn> <strong>REQUIRED</strong> &mdash; an identifier for a client application. This SHOULD be a URI.</li>
+    <li><dfn>client</dfn> <strong>REQUIRED</strong> &mdash; an identifier for a client application. This MUST be a URI so that it can be preserved in the issued access token.</li>
     <li><dfn>audience restriction</dfn> <strong>RECOMMENDED</strong> &mdash; a list of values that SHOULD include an authorization server identifier.</li>
   </ul>
 </section>

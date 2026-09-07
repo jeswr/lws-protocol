@@ -9,7 +9,7 @@ Retrieves the representation of an existing resource or the listing of a <a>cont
 The read resource operation requests a resource representation with HTTP GET requests (and HEAD for header-only requests). The behavior differs depending on whether the target URL is a <a>container</a> or a non-container resource (<a>data resource</a>). Servers MUST distinguish resource types via metadata. All responses MUST integrate with metadata as defined in Section 8.1, including Link headers for key relations such as `rel="linkset"`, `rel="up"`, and `rel="type"`. Servers MUST ensure atomicity between the resource state and its metadata during reads.
 
 **GET (non-container resource)** – *Retrieve a resource's content:*
-Send GET to the resource URI for full content (if authorized). Respond with 200 OK, body containing the data, and Content-Type matching the stored media type. Servers MUST support range requests per [[!RFC7233]] for partial retrieval. Responses MUST include an ETag header for concurrency control and caching.
+Send GET to the resource URI for full content (if authorized). Respond with 200 OK, body containing the data, and Content-Type identifying the selected representation. Servers MUST support range requests per [[!RFC9110]] for partial retrieval. Responses MUST include an ETag header for concurrency control and caching.
 
 **Example (GET a file):**
 ```
@@ -21,7 +21,7 @@ This requests the content of `/alice/notes/shoppinglist.txt`, indicating that th
 ```
 HTTP/1.1 200 OK
 Content-Type: text/plain; charset=UTF-8
-Content-Length: 34
+Content-Length: 58
 ETag: "abc123456"
 Link: </alice/notes/shoppinglist.txt.meta>; rel="linkset"; type="application/linkset+json"
 Link: </alice/notes/>; rel="up"
@@ -36,10 +36,10 @@ chocolate bars
 hash
 eggs
 ```
-The server returned the text content (34 bytes in total, as indicated by `Content-Length`). The content is exactly the stored data in the file. The `ETag: "abc123456"` is a version identifier for caching or concurrency purposes. The response includes Link headers for metadata discoverability, with mandatory fields such as `up` and `type`.
+The server returned the text content (58 UTF-8 bytes, with one LF after each displayed body line, including the final line). The content is exactly the stored data in the file. The `ETag: "abc123456"` is a version identifier for caching or concurrency purposes. The response includes Link headers for metadata discoverability, with mandatory fields such as `up` and `type`.
 
 **GET (<a>container</a> resource)** – *List a <a>container</a>'s contents:*
-When the target URI corresponds to a <a>container</a> (determined via metadata type), a GET request returns a listing of the <a>container</a>'s members. The response body is a <a>container representation</a> as defined in the [Container Representation](#container-representation) section, using the LWS container media type. The listing includes metadata for each member: resource identifiers (MUST), types (MUST), media types (MUST for DataResources), sizes (SHOULD), and modification timestamps (SHOULD).
+When the target URI corresponds to a <a>container</a> (determined via metadata type), a GET request returns a listing of the <a>container</a>'s members. The response body is a <a>container representation</a> as defined in the [Container Representation](#container-representation) section, using a supported representation selected as defined in <a href="#lws-media-type"></a>. The listing includes metadata for each member: resource identifiers (MUST), types (MUST), media types (MUST for DataResources), sizes (SHOULD), and modification timestamps (SHOULD).
 
 **Example (GET a container):**
 ```
@@ -81,11 +81,11 @@ Link: <https://www.w3.org/ns/lws#Container>; rel="type"
 ```
 In this example, `/alice/notes/` is a <a>container</a>. The response uses JSON-LD with the LWS context, listing members with required metadata. Each item includes its `type`, `id`, `format`, `size`, and `modified` timestamp as flat properties.
 
-In all cases, the server MUST include the following metadata in the response headers: an ETag (representing the listing version, which changes on membership modifications), and Link headers with `rel="type"` indicating it is a <a>container</a>, `rel="linkset"` and `rel="up"`.
+In successful container GET/HEAD responses, the server MUST include the following metadata in the response headers: an ETag (representing the listing version, which changes on membership modifications), and Link headers with `rel="type"` indicating it is a <a>container</a>, `rel="linkset"` and `rel="up"` for a non-root container.
 
 **HEAD (any resource or <a>container</a>)** – *Headers/metadata only:*
-The LWS server MUST support HEAD [[RFC9110]] for both <a>containers</a> and non-containers, returning the same headers as GET (including ETag, Content-Type, Link for metadata) but without a body. This enables metadata retrieval without transferring content.
+The LWS server MUST support HEAD for containers and data resources, conforming to [[!RFC9110]] Section 9.3.2. It MUST NOT send response content. The selected representation's ETag, Content-Type, and required discovery links MUST be supplied; a Content-Length, if supplied, describes the corresponding GET content, not the empty HEAD response.
 
-**Caching and Conditional Requests:** LWS leverages HTTP caching semantics. Servers MUST support conditional requests via If-None-Match (with ETags) or If-Modified-Since headers. If the resource or <a>container</a> listing has not changed, respond with 304 Not Modified to avoid redundant transfers. ETags MUST be provided in all GET/HEAD responses for concurrency and caching support.
+**Caching and Conditional Requests:** Servers MUST evaluate preconditions in the order defined by [[!RFC9110]] Section 13, after normal request checks including authorization. If-None-Match takes precedence over If-Modified-Since. A failed GET/HEAD cache precondition produces 304 as specified there, with no content and the required validator/cache fields. Successful GET/HEAD responses MUST carry the selected representation's ETag; this requirement does not add ETags to error responses. Authorized representations MUST NOT be reused across principals without authorization and cache controls that permit it, following [[!RFC9111]] Section 3.2. Servers SHOULD use `Cache-Control: private` for user-specific listings and grants unless a stricter policy is required.
 
-**Discoverability and Authorization:** For enhanced discoverability, servers SHOULD include WWW-Authenticate headers on 401 Unauthorized responses with parameters to guide clients without hardcoded URIs. Metadata links SHOULD be included where applicable.
+**Discoverability and Authorization:** For enhanced discoverability, servers MUST include WWW-Authenticate headers on 401 Unauthorized responses with parameters to guide clients without hardcoded URIs. Metadata links SHOULD be included where applicable.

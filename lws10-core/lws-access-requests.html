@@ -29,7 +29,7 @@
     <code>type</code> equal to the string <code>AccessRequestService</code>, and a
     service object describing an endpoint for <a>access grants</a> MUST have a
     <code>type</code> equal to the string <code>AccessGrantService</code>. A service
-    object SHOULD include a <code>conformsTo</code> property whose value is a collection
+    object MUST include a <code>conformsTo</code> property whose value is a collection
     of one or more URIs identifying the <a>access profiles</a> supported at that
     endpoint. Additional properties MAY be included:
   </p>
@@ -60,6 +60,12 @@
   ]
 }
   </pre>
+</section>
+
+<section id="access-odrl-profile">
+  <h3>ODRL Profile Binding</h3>
+  <p>The optional <a href="../lws10-access-odrl/">ODRL Access Profile</a> defines an ODRL-native alternative to the legacy <code>AccessProfile</code> below. A service advertising <code>https://www.w3.org/ns/lws#OdrlAccessProfile</code> MUST process the ODRL policy structure and lifecycle defined there. The <code>access</code> values are <code>odrl:Request</code> policies in requests and <code>odrl:Set</code> policies in activated grants. A server MUST NOT interpret an unknown profile as the legacy flat policy.</p>
+  <p>The <a href="../lws10-authz/">reference authorization bindings</a> specify policy activation and enforcement for servers claiming one of those optional bindings. Advertising an expression profile alone does not claim support for every action or constraint, nor authority to approve it.</p>
 </section>
 
 <section id="access-data-model">
@@ -700,15 +706,15 @@ Link: &lt;https://type.example/Playlist&gt;; rel="type"
 
   <p>
     The data model defined in this section is independent of any particular
-    serialization.
+    serialization. Property names in this section denote their vocabulary IRIs. An RDF representation identifies request/grant types with <code>rdf:type</code>, storage with <code>lws:storage</code>, routing inbox with <code>ldp:inbox</code>, and policies with <code>lws:access</code>. JSON aliases, arrays, and nesting constrain the fixed JSON representation only. Servers MUST validate all policy constraints after RDF parsing; changing aliases or serialization MUST NOT change the authorization meaning.
   </p>
 
   <section id="json-ld-serialization">
     <h4>JSON-LD Serialization</h4>
 
     <p>
-      This specification defines a JSON-LD serialization for <a>access requests</a> and
-      <a>access grants</a>. Documents using this serialization MUST include an
+      This specification defines an optional fixed JSON-LD serialization for <a>access requests</a> and
+      <a>access grants</a>. Documents selecting this representation MUST include an
       <code>@context</code> property whose value is an ordered set that includes
       <code>https://www.w3.org/ns/lws/v1</code>. Additional context entries MAY be
       included to define extension terms.
@@ -742,9 +748,7 @@ Link: &lt;https://type.example/Playlist&gt;; rel="type"
   </p>
 
   <p>
-    These endpoints MUST support the JSON-LD serialization defined in
-    <a href="#json-ld-serialization"></a> for both request and response payloads. Servers
-    MAY support additional serializations.
+    These endpoints MUST advertise supported request and response content types as defined in <a href="#lws-media-type"></a>. They MAY operate with Turtle only. The fixed JSON-LD layout is required only when that representation is advertised and selected; generic RDF representations are validated against the same data model and selected access profile.
   </p>
 
   <p>

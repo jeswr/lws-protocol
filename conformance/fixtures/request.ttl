@@ -1,0 +1,12 @@
+@prefix lws: <https://www.w3.org/ns/lws#> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+<https://requests.example/123> a lws:AccessRequest ;
+    lws:storage <https://storage.example/> ;
+    lws:access <https://requests.example/123#policy> .
+<https://requests.example/123#policy> a odrl:Request ;
+    odrl:profile lws:OdrlAccessProfile ; odrl:conflict odrl:prohibit ;
+    odrl:permission [ odrl:assignee <https://agent.example/id> ;
+        odrl:target <https://storage.example/root/report> ; odrl:action odrl:read ;
+        odrl:constraint [ odrl:leftOperand odrl:dateTime ; odrl:operator odrl:lt ;
+            odrl:rightOperand "2027-01-01T00:00:00Z"^^xsd:dateTime ] ] .

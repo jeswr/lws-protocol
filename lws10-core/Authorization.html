@@ -78,16 +78,23 @@ WWW-Authenticate: Bearer as_uri="https://authorization.example",
     </pre>
   </section>
 
+  <section id="authorization-standard-discovery">
+    <h4>OAuth Resource Metadata and Agent Adapters</h4>
+    <p>A storage server SHOULD publish OAuth Protected Resource Metadata [[!RFC9728]] and advertise its location using the <code>resource_metadata</code> challenge parameter. Its <code>resource</code> value MUST be the canonical storage realm and its <code>authorization_servers</code> MUST identify the trusted authorization servers for that realm. The LWS challenge parameters remain available to LWS clients.</p>
+    <p>Authorization clients MUST validate the issuer and resource binding of discovered metadata before sending credentials. Storage containment is established through trusted storage discovery and configured authorization-server relationships, not a textual URI prefix or an untrusted challenge alone. An authorization server MUST validate the credential's intended recipient, client binding, issuer trust, and any delegation before exchange. Supporting a token type does not imply trusting every issuer of that type.</p>
+    <p class="note">An MCP adapter is both an MCP resource server and a client of LWS. Its incoming MCP access token is not automatically a credential accepted by LWS. The informative <a href="../implementation/agent-compatibility.md">agent compatibility report</a> defines the adapter boundary and reproducible experiments.</p>
+  </section>
+
   <section id="authorization-server-metadata">
     <h4>Authorization Server Metadata</h4>
 
     <p>
       An authorization server MUST provide a metadata resource to allow clients to discover endpoint locations and capabilities as described
-      in [[!RFC8414]]. This metadata resource MUST be available at a URL with the path <code>/.well-known/lws-configuration</code>.
+      in [[!RFC8414]]. This metadata resource MUST be available using the <code>lws-configuration</code> well-known suffix and the issuer-path construction in [[!RFC8414]] Section 3. Servers SHOULD also publish the same issuer and applicable endpoint information at the standard <code>oauth-authorization-server</code> location. Metadata documents for the same issuer MUST NOT contradict one another.
     </p>
 
     <p>
-      An authorization server SHOULD advertise the subject tokens that it supports by including a <code>subject_token_types_supported</code>
+      An authorization server MUST advertise the subject tokens that it supports by including a <code>subject_token_types_supported</code>
       entry in the server metadata document. This entry is a JSON array containing a list of valid <code>subject_token_type</code> values
       that can be supplied at the authorization server's token endpoint.
     </p>
@@ -112,7 +119,7 @@ WWW-Authenticate: Bearer as_uri="https://authorization.example",
         "token"],
     "subject_token_types_supported": [
         "urn:ietf:params:oauth:token-type:jwt",
-        "urn:ietf:params:oauth:token-type:id-token"]
+        "urn:ietf:params:oauth:token-type:id_token"]
 }
     </pre>
 
@@ -178,7 +185,7 @@ grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Atoken-exchange
 
       <p>
         If the token request is valid and the client is authorized to make the request, the authorization server response MUST
-        conform to Section 5.1 from the OAuth 2.0 Authorization Framework [[!RFC6749]]. The resulting access token MUST conform
+        conform to [[!RFC8693]] Section 2.2.1, including <code>issued_token_type</code>, and the applicable OAuth token-response requirements [[!RFC6749]]. The resulting access token MUST conform
         to the JSON Web Token Profile for OAuth 2.0 Access Tokens [[!RFC9068]].
       </p>
 
@@ -220,17 +227,20 @@ grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Atoken-exchange
       <pre id="example-authorization-token-exchange-successful-response" class="example">
 HTTP/1.1 200 OK
 Content-Type: application/json
+Cache-Control: no-store
+Pragma: no-cache
 
 {
     "access_token":"eyJ0eXAiOiJhcytqd3QiLCJhbGciOiJFUzI1NiIs...DeWt4QuZXso",
+    "issued_token_type":"urn:ietf:params:oauth:token-type:access_token",
     "token_type":"Bearer",
-    "expires_in":3600
+    "expires_in":300
 }
       </pre>
 
       <p>
         All invalid or unauthorized requests MUST result in an error response as described in Section 5.2 in
-        the OAuth 2.0 Authorization Framework [[!RFC6749]].
+        the OAuth 2.0 Authorization Framework [[!RFC6749]] and the additional errors in [[!RFC8693]] Section 2.2.2.
       </p>
 
       <pre id="example-authorization-token-exchange-error-response" class="example">
@@ -303,7 +313,7 @@ Authorization: Bearer eyJ0eXAiOiJhcytqd3QiLCJhbGciOiJFUzI1NiIs...DeWt4QuZXso
 
       <ul>
         <li>
-          JWT Signature Validation: Verify the JWT signature using the authorization server's public key retrieved from the
+          JWT Signature Validation: Validate the token according to [[!RFC9068]] Section 4, including the <code>at+jwt</code> type, configured acceptable algorithms, required claims, and rejection of unsigned tokens. Verify its signature using the authorization server's public key retrieved from the
           <code>jwks_uri</code> specified in the authorization server metadata. Storage servers SHOULD cache these keys and
           MUST support key rotation.
         </li>
@@ -331,12 +341,12 @@ Authorization: Bearer eyJ0eXAiOiJhcytqd3QiLCJhbGciOiJFUzI1NiIs...DeWt4QuZXso
 
       <p>
         If validation fails, the storage server MUST return 401 Unauthorized with a <code>WWW-Authenticate</code> header
-        containing an appropriate error parameter (e.g., invalid_token, invalid_request, or insufficient_scope).
+        containing an appropriate <code>invalid_token</code> error for an invalid access token, following [[!RFC6750]] Section 3.1. A malformed authorization request and insufficient permission are distinct errors under that section.
       </p>
 
       <p>
         If the token is otherwise valid but an authorization policy does not allow the requested operation,
-        the storage server MUST reject the request.
+        the storage server MUST return 403 Forbidden, subject to permitted concealment of resource existence. An expired or malformed token MUST NOT be reclassified as a policy denial.
       </p>
     </section>
   </section>

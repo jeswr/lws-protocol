@@ -2,7 +2,7 @@
 This section defines the model for associating metadata with <a>LWS resources</a>. The LWS metadata system is based on the principles of Web Linking [[!RFC8288]], which allows servers to describe the relationships between resources using typed links. Metadata enhances discoverability, supports self-descriptive APIs, and aligns with resource operations, and <a>container</a> hierarchies.
 
 **Metadata Model**
-All metadata in LWS is expressed as a set of typed links originating from a resource (the link context). Each link consists of:
+Link metadata in LWS is expressed as a set of typed links originating from a resource (the link context). Each link consists of:
 - A link target: A URI identifying the related resource.
 - A relation type: A string that defines the nature of the relationship.
 - Optional target attributes: Additional key-value pairs that further describe the link or the target resource.
@@ -20,14 +20,14 @@ For each resource in <a>storage</a>, a server MUST make metadata links available
 Clients discover metadata primarily through Link headers in response to GET or HEAD requests.
 - Storage: Servers MUST include a Link header with `rel="https://www.w3.org/ns/lws#storage"` on relevant responses.
 - <a>Containment</a>: Servers MUST include a Link header with `rel="up"` pointing to the parent <a>container</a> for any non-root resource.
-- Preferences: Clients MAY use the Prefer header [[!RFC7240]] with the URI `https://www.w3.org/ns/lws#PreferLinkRelations` to include or omit specific relations.
+- Preferences: Additional preferences require an explicitly defined extension. A preference MUST NOT suppress discovery links required by this specification.
 
 **Metadata Types**
 
 | Category | Description |
 |------------|------------|
-| System Managed | Maintained by the server; Read-Only. Includes `linkset`, `type`, `format`, `size`, `modified`. |
-| Core Metadata | Managed by the client (subject to server restrictions). Includes `up`, `items`, `title`, `creator`. |
+| System Managed | Maintained by the server; Read-Only. Includes `linkset`, `type`, `format`, `size`, `modified`, `up`, and `items`. |
+| Core Metadata | Managed by the client (subject to server restrictions). Includes `title` and `creator`. |
 | User-Defined | Custom vocabularies and indexes created by the user. |
 
 
@@ -36,7 +36,7 @@ Core metadata MAY be modified by clients. To ensure interoperability, servers MU
 
 1. Method Discovery: Servers MUST advertise support for GET and PATCH operations on the <a>linkset resource</a> via the Allow header.
 
-2. Patch Format Discovery: Servers MUST advertise support for JSON Merge Patch [[!RFC7386]] via the Accept-Patch header: `Accept-Patch: application/merge-patch+json`.
+2. Patch Format Discovery: Servers MUST advertise support for JSON Merge Patch [[!RFC7396]] via the Accept-Patch header: `Accept-Patch: application/merge-patch+json`.
 
 3. Optional Methods: Servers MAY support PUT or alternative patch formats; if supported, these MUST be included in the Allow and Accept-Patch headers respectively.
 
@@ -49,6 +49,6 @@ Metadata is managed by interacting with the resource's associated <a>linkset res
 
 - Replacement (PUT): If advertised in the Allow header, a client MAY replace the entire linkset. If the server does not support PUT, it MUST reject the request with 405 Method Not Allowed.
 
-- Restrictions: Servers MAY restrict modifications to specific links (like `up` or `items`) to maintain system integrity.
+- Restrictions: Servers MUST reject attempts to directly change server-managed containment or membership (including `up` and `items`), without applying any part of the update. These change only through the resource operations defined by this specification.
 
 - Lifecycle: Metadata lifecycles are tied to the described resource; deleting a resource MUST result in the automatic removal of its associated <a>linkset resource</a> metadata.

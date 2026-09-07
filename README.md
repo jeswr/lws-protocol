@@ -18,6 +18,16 @@ To see the most recent HTML rendered version of the specification from this repo
 - [`searchindex`](lws10-searchindex/): Search and Type Index Services
 
 
+## Personal implementation proposals
+
+These additions are review proposals, not Working Group decisions:
+
+- [`access-odrl`](lws10-access-odrl/): ODRL profile for requests and active grants, with an explicit read subset.
+- [`authz`](lws10-authz/): Reference authorization bindings for ODRL, WAC, and ACP.
+- [Implementation and evidence](implementation/README.md): companion SPARQ implementation, HTTP/W3C audit, limitations, and review PRs.
+- [Conformance fixtures](conformance/README.md): reproducible graph, context, and rejection checks.
+- [MCP adapter](examples/mcp-adapter/README.md): runnable official-SDK adapter and native grant/revocation experiment.
+
 ## Contribution Guidelines:
 
 The following etiquette is followed for managing PRs submitted to this repository. In the below table we refer to the official [W3C Correction Classes](https://www.w3.org/policies/process/#correction-classes).

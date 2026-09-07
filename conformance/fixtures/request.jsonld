@@ -1,0 +1,14 @@
+{
+  "@context": ["https://www.w3.org/ns/lws/v1", {"odrl": "http://www.w3.org/ns/odrl/2/", "xsd": "http://www.w3.org/2001/XMLSchema#"}],
+  "id": "https://requests.example/123",
+  "type": "AccessRequest",
+  "storage": "https://storage.example/",
+  "access": [{
+    "id": "https://requests.example/123#policy", "type": "odrl:Request",
+    "profile": "https://www.w3.org/ns/lws#OdrlAccessProfile", "conflict": "http://www.w3.org/ns/odrl/2/prohibit",
+    "permission": [{
+      "assignee": "https://agent.example/id", "target": "https://storage.example/root/report", "action": "read",
+      "constraint": [{"leftOperand": "dateTime", "operator": "lt", "rightOperand": {"@value": "2027-01-01T00:00:00Z", "@type": "xsd:dateTime"}}]
+    }]
+  }]
+}

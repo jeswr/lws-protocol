@@ -1,0 +1,40 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix lws: <https://www.w3.org/ns/lws#> .
+@prefix shape: <urn:lws:shape:> .
+
+shape:Policy a sh:NodeShape ;
+    sh:targetClass odrl:Request, odrl:Set ;
+    sh:nodeKind sh:IRI ; sh:closed true ;
+    sh:property [ sh:path rdf:type ; sh:minCount 1 ; sh:maxCount 1 ; sh:in (odrl:Request odrl:Set) ],
+      [ sh:path odrl:profile ; sh:minCount 1 ; sh:maxCount 1 ; sh:hasValue lws:OdrlAccessProfile ],
+      [ sh:path odrl:conflict ; sh:minCount 1 ; sh:maxCount 1 ; sh:hasValue odrl:prohibit ],
+      [ sh:path odrl:permission ; sh:node shape:Permission ],
+      [ sh:path odrl:prohibition ; sh:node shape:Prohibition ] ;
+    sh:or ( [ sh:property [ sh:path odrl:permission ; sh:minCount 1 ] ]
+            [ sh:property [ sh:path odrl:prohibition ; sh:minCount 1 ] ] ) .
+
+shape:Rule a sh:NodeShape ; sh:nodeKind sh:BlankNodeOrIRI ; sh:closed true ;
+    sh:property [ sh:path rdf:type ; sh:maxCount 1 ; sh:in (odrl:Permission odrl:Prohibition) ],
+      [ sh:path odrl:assignee ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ],
+      [ sh:path odrl:target ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ],
+      [ sh:path odrl:action ; sh:minCount 1 ; sh:maxCount 1 ; sh:in (odrl:read odrl:modify odrl:delete lws:create) ],
+      [ sh:path odrl:constraint ; sh:node shape:Constraint ] .
+shape:Permission a sh:NodeShape ; sh:node shape:Rule ;
+    sh:property [ sh:path rdf:type ; sh:in (odrl:Permission) ] .
+shape:Prohibition a sh:NodeShape ; sh:node shape:Rule ;
+    sh:property [ sh:path rdf:type ; sh:in (odrl:Prohibition) ] .
+shape:Constraint a sh:NodeShape ; sh:nodeKind sh:BlankNodeOrIRI ; sh:closed true ;
+    sh:property [ sh:path rdf:type ; sh:maxCount 1 ; sh:in (odrl:Constraint) ],
+      [ sh:path odrl:leftOperand ; sh:minCount 1 ; sh:maxCount 1 ; sh:hasValue odrl:dateTime ],
+      [ sh:path odrl:operator ; sh:minCount 1 ; sh:maxCount 1 ; sh:in (odrl:gteq odrl:lt odrl:lteq) ],
+      [ sh:path odrl:rightOperand ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ; sh:pattern "(Z|[+-][0-9]{2}:[0-9]{2})$" ] .
+
+shape:RequestEnvelope a sh:NodeShape ; sh:targetClass lws:AccessRequest ;
+    sh:property [ sh:path lws:storage ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ],
+      [ sh:path lws:access ; sh:minCount 1 ; sh:class odrl:Request ; sh:node shape:Policy ] .
+shape:GrantEnvelope a sh:NodeShape ; sh:targetClass lws:AccessGrant ;
+    sh:property [ sh:path lws:storage ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ],
+      [ sh:path lws:access ; sh:minCount 1 ; sh:class odrl:Set ; sh:node shape:Policy ] .
