@@ -33,11 +33,11 @@ Use POST to add a new resource inside an existing <a>container</a>. The server a
 
 **Example (POST to create a new data resource):**
 ```
-POST /alice/notes/ HTTP/1.1
-Host: example.com
+POST /o031yq HTTP/1.1
+Host: alice.example.com
 Authorization: Bearer <token>
 Content-Type: text/plain
-Content-Length: 47
+Content-Length: 43
 
 milk
 eggs
@@ -46,25 +46,25 @@ butter
 apples
 orange juice
 ```
-In this example, the client is posting to the <a>container</a> `/alice/notes/`. It provides `text/plain` content (a grocery list) and suggests the name `shoppinglist.txt` for the new resource. If `/alice/notes/` exists and the client is authorized, the server will create a new <a>data resource</a> and add it to the <a>container</a>'s membership.
+In this example, the client is posting a grocery list to the <a>container</a> `/o031yq`. If the container exists and the client is authorized, the server creates a new <a>data resource</a> and adds it to the container's membership. The client does not choose the new resource's URI.
 
 **Example (Response to POST — Data Resource):**
 ```
 HTTP/1.1 201 Created
-Location: /alice/notes/shoppinglist.txt
+Location: /xqq298
 Content-Type: text/plain; charset=UTF-8
-Link: </alice/notes/shoppinglist.txt.meta>; rel="linkset"; type="application/linkset+json"
-Link: </alice/notes/>; rel="up"
+Link: </em6fpx>; rel="linkset"; type="application/linkset+json"
+Link: </o031yq>; rel="up"
 Link: <https://www.w3.org/ns/lws#DataResource>; rel="type"
 Content-Length: 0
 ```
-On success, return 201 Created with the new URI in the `Location` header. The body may be empty or a minimal representation.
-If the target <a>container</a> `/alice/notes/` does not exist, the server MUST return a 404 error status unless another status code is more appropriate.
+On success, return 201 Created with the new URI in the `Location` header. The body may be empty or a minimal representation. The server-assigned resource URI `/xqq298` and linkset URI `/em6fpx` are opaque; their paths do not encode the container URI or a metadata suffix.
+If the target <a>container</a> `/o031yq` does not exist, the server MUST return a 404 error status unless another status code is more appropriate.
 
 **Creating <a>Containers</a>:** To create a new <a>container</a>, a client uses POST to an existing parent <a>container</a> with a `Link` header indicating the Container type. For example:
 ```
-POST /alice/ HTTP/1.1
-Host: example.com
+POST / HTTP/1.1
+Host: alice.example.com
 Authorization: Bearer <token>
 Content-Length: 0
 Link: <https://www.w3.org/ns/lws#Container>; rel="type"
@@ -73,13 +73,13 @@ Link: <https://www.w3.org/ns/lws#Container>; rel="type"
 **Example (Response to POST — container):**
 ```
 HTTP/1.1 201 Created
-Location: /alice/notes/
-Link: </alice/notes/.meta>; rel="linkset"; type="application/linkset+json"
-Link: </alice/>; rel="up"
+Location: /o031yq
+Link: </fljkzl>; rel="linkset"; type="application/linkset+json"
+Link: </>; rel="up"
 Link: <https://www.w3.org/ns/lws#Container>; rel="type"
 Content-Length: 0
 ```
-This creates a new <a>container</a> at `/alice/notes/`, with server-generated metadata including `rel="type"` as `https://www.w3.org/ns/lws#Container`.
+This creates a new <a>container</a> at `/o031yq` under the storage root `/`, with server-generated metadata including `rel="type"` as `https://www.w3.org/ns/lws#Container`. The container and its linkset have independently assigned URIs.
 
 **Additional notes on Create (HTTP binding):**
 * POST is not idempotent. Repeating it may create duplicates; clients SHOULD avoid unintentional retries or use unique identifiers/checks to prevent this.
