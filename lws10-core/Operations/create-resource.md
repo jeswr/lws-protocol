@@ -46,7 +46,7 @@ butter
 apples
 orange juice
 ```
-In this example, the client is posting a grocery list to the <a>container</a> `/o031yq`. If the container exists and the client is authorized, the server creates a new <a>data resource</a> and adds it to the container's membership. The client does not choose the new resource's URI.
+In this example, the client is posting a grocery list to the <a>container</a> `/o031yq`. The body uses UTF-8 with one LF byte after each line, including the last line, for a total of 43 bytes. If the container exists and the client is authorized, the server creates a new <a>data resource</a> and adds it to the container's membership. The client does not choose the new resource's URI.
 
 **Example (Response to POST — Data Resource):**
 ```
