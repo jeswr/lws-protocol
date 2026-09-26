@@ -19,7 +19,7 @@ Resources in LWS are classified as either:
 The <a>containment</a> relationship between a resource and its parent <a>container</a> is expressed via the `rel="up"` link relation. Servers MUST include a `Link` header with `rel="up"` pointing to the parent container in responses to GET and HEAD requests on any non-root resource.
 
 ```
-Link: </alice/notes/>; rel="up"
+Link: </o031yq>; rel="up"
 ```
 
 A <a>container</a>'s members are listed in its representation using the `items` property. The server manages this list; clients cannot modify it directly. Membership changes occur as a side effect of resource creation and deletion.
@@ -38,6 +38,8 @@ The server MUST maintain <a>containment</a> integrity at all times:
 Resources are identified by URIs. The URI of a resource is independent of its position in the <a>containment</a> hierarchy. Servers assign URIs during resource creation and MAY incorporate client hints, but clients SHOULD NOT assume that URI structure reflects containment.
 
 <a>Containment</a> relationships are expressed through metadata (`rel="up"` links and the `items` property in <a>container</a> representations), not through URI path structure. This separation allows servers flexibility in URI assignment while maintaining a well-defined organizational model.
+
+For example, a resource at `/xqq298` can be a member of the <a>container</a> at `/o031yq`. Its `rel="up"` link identifies the parent even though neither URI has a path segment that identifies the relationship. Clients discover membership from links and <a>container representations</a>, rather than constructing a member URI from the container URI.
 
 ### Container Membership and Authorization
 
