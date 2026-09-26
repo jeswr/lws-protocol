@@ -37,7 +37,7 @@ A contained resource description SHOULD include:
 
 #### Example Container Representation
 
-The following example shows a <a>container</a> retrieved from `https://alice.example.com/o031yq`, containing two resources whose URIs do not share its path prefix. The relative identifiers resolve against that URL.
+The following example shows a <a>container</a> at `/o031yq` containing two resources whose URIs do not share its path prefix:
 
 ```json
 {

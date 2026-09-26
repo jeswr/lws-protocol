@@ -35,7 +35,7 @@ butter
 apples
 orange juice
 ```
-The server returned the text content (43 bytes in total, as indicated by `Content-Length`, using UTF-8 with one LF byte after each line, including the last line). The content is exactly the stored data in the file. The `ETag: "abc123456"` is a validator for caching and conditional request purposes. The response includes `Link` headers for metadata discoverability, with mandatory fields such as `up` and `type`. The `up` and `linkset` targets cannot be inferred from `/xqq298`.
+The server returned the text content (43 bytes in total, as indicated by `Content-Length`). The content is exactly the stored data in the file. The `ETag: "abc123456"` is a validator for caching and conditional request purposes. The response includes `Link` headers for metadata discoverability, with mandatory fields such as `up` and `type`. The `up` and `linkset` targets cannot be inferred from `/xqq298`.
 
 **GET (<a>container</a> resource)** – *List a <a>container</a>'s contents:*
 When the target URI corresponds to a <a>container</a> (determined via metadata type), a GET request returns a listing of the <a>container</a>'s members. The response body is a <a>container representation</a> as defined in the [Container Representation](#container-representation) section, using the LWS container media type. The listing includes metadata for each member: resource identifiers (MUST), types (MUST), media types (MUST for DataResources), sizes (SHOULD), and modification timestamps (SHOULD).
