@@ -46,19 +46,22 @@ butter
 apples
 orange juice
 ```
-In this example, the client is posting a grocery list to the <a>container</a> `/o031yq`. If the container exists and the client is authorized, the server creates a new <a>data resource</a> and adds it to the container's membership. The client does not choose the new resource's URI.
+In this example, the client is posting a grocery list to the <a>container</a> `/o031yq`. The body uses UTF-8 with one LF byte after each line, including the last line, for a total of 43 bytes. If the container exists and the client is authorized, the server creates a new <a>data resource</a> and adds it to the container's membership. The client does not choose the new resource's URI.
 
 **Example (Response to POST — Data Resource):**
 ```
 HTTP/1.1 201 Created
 Location: /xqq298
 Content-Type: text/plain; charset=UTF-8
-Link: </em6fpx>; rel="linkset"; type="application/linkset+json"
-Link: </o031yq>; rel="up"
-Link: <https://www.w3.org/ns/lws#DataResource>; rel="type"
+Link: </em6fpx>; rel="linkset"; type="application/linkset+json"; anchor="/xqq298"
+Link: </o031yq>; rel="up"; anchor="/xqq298"
+Link: <https://www.w3.org/ns/lws#DataResource>; rel="type"; anchor="/xqq298"
 Content-Length: 0
 ```
 On success, return 201 Created with the new URI in the `Location` header. The body may be empty or a minimal representation. The server-assigned resource URI `/xqq298` and linkset URI `/em6fpx` are opaque; their paths do not encode the container URI or a metadata suffix.
+
+In this response, each `anchor` parameter identifies the newly created resource as the link context, following [[RFC8288]]. The `Location` header alone does not set the context of these links.
+
 If the target <a>container</a> `/o031yq` does not exist, the server MUST return a 404 error status unless another status code is more appropriate.
 
 **Creating <a>Containers</a>:** To create a new <a>container</a>, a client uses POST to an existing parent <a>container</a> with a `Link` header indicating the Container type. For example:
@@ -74,9 +77,9 @@ Link: <https://www.w3.org/ns/lws#Container>; rel="type"
 ```
 HTTP/1.1 201 Created
 Location: /o031yq
-Link: </fljkzl>; rel="linkset"; type="application/linkset+json"
-Link: </>; rel="up"
-Link: <https://www.w3.org/ns/lws#Container>; rel="type"
+Link: </fljkzl>; rel="linkset"; type="application/linkset+json"; anchor="/o031yq"
+Link: </>; rel="up"; anchor="/o031yq"
+Link: <https://www.w3.org/ns/lws#Container>; rel="type"; anchor="/o031yq"
 Content-Length: 0
 ```
 This creates a new <a>container</a> at `/o031yq` under the storage root `/`, with server-generated metadata including `rel="type"` as `https://www.w3.org/ns/lws#Container`. The container and its linkset have independently assigned URIs.
