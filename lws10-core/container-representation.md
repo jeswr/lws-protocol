@@ -37,25 +37,25 @@ A contained resource description SHOULD include:
 
 #### Example Container Representation
 
-The following example shows a <a>container</a> at `/alice/notes/` containing two resources:
+The following example shows a <a>container</a> at `/o031yq` containing two resources whose URIs do not share its path prefix:
 
 ```json
 {
   "@context": "https://www.w3.org/ns/lws/v1",
-  "id": "/alice/notes/",
+  "id": "/o031yq",
   "type": "Container",
   "totalItems": 2,
   "items": [
     {
       "type": "DataResource",
-      "id": "/alice/notes/shoppinglist.txt",
+      "id": "/xqq298",
       "format": "text/plain",
-      "size": 47,
+      "size": 43,
       "modified": "2025-11-24T12:00:00Z"
     },
     {
       "type": ["DataResource", "http://example.org/customType"],
-      "id": "/alice/notes/todo.json",
+      "id": "/gd9rc3",
       "format": "application/json",
       "size": 2048,
       "modified": "2025-11-24T13:00:00Z"

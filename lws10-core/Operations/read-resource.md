@@ -13,37 +13,37 @@ Send GET to the resource URI for full content (if authorized). Respond with 200 
 
 **Example (GET a file):**
 ```
-GET /alice/notes/shoppinglist.txt HTTP/1.1
+GET /xqq298 HTTP/1.1
+Host: alice.example.com
 Authorization: Bearer <token>
 Accept: text/plain
 ```
-This requests the content of `/alice/notes/shoppinglist.txt`, indicating that the client wants it in text form. Assuming the resource exists, is text, and the client has access:
+This requests the content of `/xqq298`, indicating that the client wants it in text form. Assuming the resource exists, is text, and the client has access:
 ```
 HTTP/1.1 200 OK
 Content-Type: text/plain; charset=UTF-8
-Content-Length: 34
+Content-Length: 43
 ETag: "abc123456"
-Link: </alice/notes/shoppinglist.txt.meta>; rel="linkset"; type="application/linkset+json"
-Link: </alice/notes/>; rel="up"
+Link: </em6fpx>; rel="linkset"; type="application/linkset+json"
+Link: </o031yq>; rel="up"
 Link: <https://www.w3.org/ns/lws#DataResource>; rel="type"
 
 milk
-cheese
-bread
-guacamole
-soda
-chocolate bars
-hash
 eggs
+bread
+butter
+apples
+orange juice
 ```
-The server returned the text content (34 bytes in total, as indicated by `Content-Length`). The content is exactly the stored data in the file. The `ETag: "abc123456"` is a validator for caching and conditional request purposes. The response includes `Link` headers for metadata discoverability, with mandatory fields such as `up` and `type`.
+The server returned the text content (43 bytes in total, as indicated by `Content-Length`). The content is exactly the stored data in the file. The `ETag: "abc123456"` is a validator for caching and conditional request purposes. The response includes `Link` headers for metadata discoverability, with mandatory fields such as `up` and `type`. The `up` and `linkset` targets cannot be inferred from `/xqq298`.
 
 **GET (<a>container</a> resource)** – *List a <a>container</a>'s contents:*
 When the target URI corresponds to a <a>container</a> (determined via metadata type), a GET request returns a listing of the <a>container</a>'s members. The response body is a <a>container representation</a> as defined in the [Container Representation](#container-representation) section, using the LWS container media type. The listing includes metadata for each member: resource identifiers (MUST), types (MUST), media types (MUST for DataResources), sizes (SHOULD), and modification timestamps (SHOULD).
 
 **Example (GET a container):**
 ```
-GET /alice/notes/ HTTP/1.1
+GET /o031yq HTTP/1.1
+Host: alice.example.com
 Authorization: Bearer <token>
 Accept: application/lws+json
 ```
@@ -52,26 +52,26 @@ Assuming the container exists and the client has access:
 HTTP/1.1 200 OK
 Content-Type: application/lws+json
 ETag: "container-etag-789"
-Link: </alice/notes/.meta>; rel="linkset"; type="application/linkset+json"
-Link: </alice/>; rel="up"
+Link: </fljkzl>; rel="linkset"; type="application/linkset+json"
+Link: </>; rel="up"
 Link: <https://www.w3.org/ns/lws#Container>; rel="type"
 
 {
   "@context": "https://www.w3.org/ns/lws/v1",
-  "id": "/alice/notes/",
+  "id": "/o031yq",
   "type": "Container",
   "totalItems": 2,
   "items": [
     {
       "type": "DataResource",
-      "id": "/alice/notes/shoppinglist.txt",
+      "id": "/xqq298",
       "format": "text/plain",
-      "size": 47,
+      "size": 43,
       "modified": "2025-11-24T12:00:00Z"
     },
     {
       "type": ["DataResource", "http://example.org/customType"],
-      "id": "/alice/notes/todo.json",
+      "id": "/gd9rc3",
       "format": "application/json",
       "size": 2048,
       "modified": "2025-11-24T13:00:00Z"
@@ -79,7 +79,7 @@ Link: <https://www.w3.org/ns/lws#Container>; rel="type"
   ]
 }
 ```
-In this example, `/alice/notes/` is a <a>container</a>. The response uses JSON-LD with the LWS context, listing members with required metadata. Each item includes its `type`, `id`, `format`, `size`, and `modified` timestamp as flat properties.
+In this example, `/o031yq` is a <a>container</a>. The response uses JSON-LD with the LWS context, listing members with required metadata. Each item includes its `type`, `id`, `format`, `size`, and `modified` timestamp as flat properties. The `items` array, rather than a shared URI path, establishes the membership of `/xqq298` and `/gd9rc3`.
 
 In all cases, the server MUST include the following metadata in the response headers: an `ETag` header as defined in [[RFC9110]], and `Link` headers with `rel="linkset"`, `rel="up"`, and `rel="type"` indicating it is a <a>container</a>.
 
