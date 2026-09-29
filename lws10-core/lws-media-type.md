@@ -9,9 +9,13 @@ While LWS container representations use JSON-LD conventions, the constraints and
 
 #### Content Negotiation
 
-Servers MUST honor a request for `application/lws+json` on <a>containers</a> and MUST respond with `Content-Type: application/lws+json`. The response body MUST conform to the <a>container representation</a> structure defined in [](#container-representation).
+Servers MUST honor a request for either `application/lws+json` or `application/ld+json` on <a>containers</a> and MUST set the `Content-Type` response header to the requested media type. A response with `Content-Type: application/lws+json` MUST conform to the <a>container representation</a> structure defined in [](#container-representation). A response with unprofiled `Content-Type: application/ld+json` MUST be a JSON-LD document [[!JSON-LD11]], but is not required to use that JSON structure. Support for `application/json` is optional.
 
 When the selected representation depends on the request's `Accept` header, responses SHOULD include a `Vary: Accept` header [[!RFC9110]].
+
+**Note (non-normative):** A server can use the same LWS container document for `application/lws+json`, `application/ld+json`, and, if supported, `application/json`, with the corresponding `Content-Type` response header. Serving the same document is permitted, but is not required for the unprofiled media types.
+
+**Note (non-normative):** The unprofiled `application/ld+json` media type does not by itself guarantee the LWS JSON structure or an RDF graph isomorphic to that of the `application/lws+json` representation. Clients that require the LWS JSON structure can request `application/lws+json`; the recommendation for equivalent profiled JSON-LD is described above.
 
 **Note (non-normative):** A server can offer additional representations of a container (for example, `text/turtle`) through standard content negotiation [[RFC9110]]; this specification neither requires nor precludes such support.
 
