@@ -7,13 +7,17 @@ An LWS <a>container representation</a> MUST support the media type `application/
 
 While LWS container representations use JSON-LD conventions, the constraints and requirements for LWS justify the use of a specific media type. Because LWS containers can be considered a restricted profile of JSON-LD, implementations SHOULD consider the `application/ld+json; profile="https://www.w3.org/ns/lws/v1"` media type as equivalent to `application/lws+json`.
 
-#### Media Type Equivalence
+#### Content Negotiation
 
-For <a>container representations</a>, the media types `application/lws+json`, `application/ld+json`, and `application/json` are equivalent: the response body is the same JSON-LD document conforming to the <a>container representation</a> structure defined in [](#container-representation), and only the `Content-Type` response header varies. Servers MUST honor a request for any of these media types and MUST set the `Content-Type` response header to the requested media type.
+Servers MUST honor requests for both `application/lws+json` and `application/ld+json` on <a>containers</a> and MUST set the `Content-Type` response header to the requested media type. A response with `Content-Type: application/lws+json` MUST conform to the <a>container representation</a> structure defined in [](#container-representation).
 
-Because the `Content-Type` of a container response depends on the request's `Accept` header, these responses SHOULD include a `Vary: Accept` header [[!RFC9110]].
+RDF serialization formats and their associated media types are catalogued in the [W3C File Formats registry](https://www.w3.org/ns/formats/).
 
-**Note (non-normative):** This equivalence applies only to the three media types above. As with any HTTP resource, a server can offer additional representations of a container (for example, `text/turtle`) through standard content negotiation [[RFC9110]]; this specification neither requires nor precludes such support.
+For the same <a>container</a> state, authorization context, and pagination scope, responses in all supported RDF media types, including `application/lws+json`, MUST encode isomorphic RDF datasets as defined in [RDF Dataset Comparison](https://www.w3.org/TR/rdf11-concepts/#section-dataset-isomorphism) [[!RDF11-CONCEPTS]]. For this comparison, a representation of a single RDF graph is treated as a dataset containing that graph as its default graph and no named graphs; graph isomorphism is defined in [Graph Comparison](https://www.w3.org/TR/rdf11-concepts/#graph-isomorphism).
+
+When the selected representation depends on the request's `Accept` header, responses SHOULD include a `Vary: Accept` header [[!RFC9110]].
+
+**Note (non-normative):** A server can offer additional representations of a container (for example, `text/turtle`) through standard content negotiation [[RFC9110]]; this specification neither requires nor precludes such support.
 
 
 #### Pagination
