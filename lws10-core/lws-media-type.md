@@ -9,13 +9,13 @@ While LWS container representations use JSON-LD conventions, the constraints and
 
 #### Content Negotiation
 
-Servers MUST honor a request for either `application/lws+json` or `application/ld+json` on <a>containers</a> and MUST set the `Content-Type` response header to the requested media type. A response with `Content-Type: application/lws+json` MUST conform to the <a>container representation</a> structure defined in [](#container-representation). A response with unprofiled `Content-Type: application/ld+json` MUST be a JSON-LD document [[!JSON-LD11]], but is not required to use that JSON structure. Support for `application/json` is optional.
+Servers MUST honor requests for both `application/lws+json` and `application/ld+json` on <a>containers</a> and MUST set the `Content-Type` response header to the requested media type. A response with `Content-Type: application/lws+json` MUST conform to the <a>container representation</a> structure defined in [](#container-representation).
+
+RDF serialization formats and their associated media types are catalogued in the [W3C File Formats registry](https://www.w3.org/ns/formats/).
+
+For the same <a>container</a> state, authorization context, and pagination scope, responses in all supported RDF media types, including `application/lws+json`, MUST encode isomorphic RDF datasets as defined in [RDF Dataset Comparison](https://www.w3.org/TR/rdf11-concepts/#section-dataset-isomorphism) [[!RDF11-CONCEPTS]]. For this comparison, a representation of a single RDF graph is treated as a dataset containing that graph as its default graph and no named graphs; graph isomorphism is defined in [Graph Comparison](https://www.w3.org/TR/rdf11-concepts/#graph-isomorphism).
 
 When the selected representation depends on the request's `Accept` header, responses SHOULD include a `Vary: Accept` header [[!RFC9110]].
-
-**Note (non-normative):** A server can use the same LWS container document for `application/lws+json`, `application/ld+json`, and, if supported, `application/json`, with the corresponding `Content-Type` response header. Serving the same document is permitted, but is not required for the unprofiled media types.
-
-**Note (non-normative):** The unprofiled `application/ld+json` media type does not by itself guarantee the LWS JSON structure or an RDF graph isomorphic to that of the `application/lws+json` representation. Clients that require the LWS JSON structure can request `application/lws+json`; the recommendation for equivalent profiled JSON-LD is described above.
 
 **Note (non-normative):** A server can offer additional representations of a container (for example, `text/turtle`) through standard content negotiation [[RFC9110]]; this specification neither requires nor precludes such support.
 
