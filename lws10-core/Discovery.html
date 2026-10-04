@@ -71,18 +71,28 @@
     </p>
 
     <p>
-      Requests for the <a>storage</a> URI MUST return a document that conforms to the
-      <a>storage description resource</a> data model with a media type of <code>application/lws+cid</code>,
-      unless content negotiation requires a different format.
+      When a <code>GET</code> request for the <a>storage</a> URI has an <code>Accept</code> header
+      [[!RFC9110]] in which <code>application/lws+cid</code> is the most preferred media type, the server
+      MUST respond with a document that conforms to the <a>storage description resource</a> data model,
+      with a media type of <code>application/lws+cid</code>. A client that retrieves a
+      <a>storage description resource</a> MUST send such an <code>Accept</code> header.
+    </p>
+
+    <p>
+      The <a>storage</a> URI MAY also be the URI of the <a>storage root</a>, in which case the
+      <code>serviceEndpoint</code> of the <code>StorageRoot</code> service is the <a>storage</a> URI.
+      A server MAY then respond to a request that does not prefer <code>application/lws+cid</code>,
+      including a request with <code>Accept: */*</code> or without an <code>Accept</code> header, with a
+      representation of the <a>storage root</a>. Responses whose content depends on the
+      <code>Accept</code> header SHOULD include a <code>Vary: Accept</code> header [[!RFC9110]].
     </p>
 
     <p class="note">
-      The <a>storage</a> URI and the <code>serviceEndpoint</code> of the <code>StorageRoot</code> service
-      can be different URIs, as in the examples in this section. A server that also implements a protocol
-      in which the root <a>container</a> identifies the storage, such as the Solid Protocol, can
-      serve both protocols by keeping these URIs distinct. If the <a>storage</a> URI were also
-      the URI of the root <a>container</a>, a request that does not prefer a specific media type,
-      such as one with <code>Accept: */*</code>, could not satisfy clients of both protocols.
+      This lets one URI identify a <a>storage</a> both in LWS and in protocols that identify a storage
+      by its root <a>container</a>, such as the Solid Protocol. LWS clients obtain the
+      <a>storage description resource</a> by asking for <code>application/lws+cid</code>, while
+      clients of the other protocol that accept any media type, or ask for an RDF media type, obtain
+      the root <a>container</a>.
     </p>
   </section>
 

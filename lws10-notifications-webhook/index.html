@@ -296,7 +296,8 @@ Location: https://notification.example/subscriptions/9e8d7c6b5a4f
             URL is the storage identifier.
           </li>
           <li>
-            Dereference the storage identifier to retrieve the <a>storage description resource</a>.
+            Dereference the storage identifier, with an <code>Accept</code> header of
+            <code>application/lws+cid</code>, to retrieve the <a>storage description resource</a>.
             The <code>id</code> property of the top-level document map MUST match the
             storage identifier.
           </li>
