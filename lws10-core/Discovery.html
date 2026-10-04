@@ -75,6 +75,15 @@
       <a>storage description resource</a> data model with a media type of <code>application/lws+cid</code>,
       unless content negotiation requires a different format.
     </p>
+
+    <p class="note">
+      The <a>storage</a> URI and the <code>serviceEndpoint</code> of the <code>StorageRoot</code> service
+      can be different URIs, as in the examples in this section. A server that also implements a protocol
+      in which the root <a>container</a> identifies the storage, such as the Solid Protocol, can
+      serve both protocols by keeping these URIs distinct. If the <a>storage</a> URI were also
+      the URI of the root <a>container</a>, a request that does not prefer a specific media type,
+      such as one with <code>Accept: */*</code>, could not satisfy clients of both protocols.
+    </p>
   </section>
 
   <section id="storage-description-capabilities">
