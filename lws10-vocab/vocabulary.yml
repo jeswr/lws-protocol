@@ -95,6 +95,7 @@ property:
   - id: items
     label: items
     domain: lws:Container
+    container: set
     comment: The list of resources contained in a container.
 
   - id: totalItems
