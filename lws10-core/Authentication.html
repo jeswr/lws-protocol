@@ -29,9 +29,13 @@
   <h3>Authentication Credential Validation</h3>
   <p>
     Validation of an <a>authentication credential</a> requires a trust relationship between the
-    verifier and issuer of the credential. This trust relationship MAY be established
-    through an out-of-band mechanism. Any additional mechanisms for establishing trust
-    between a verifier and an issuer are outlined in specific <a data-lt="authentication suite">authentication suites</a>.
+    verifier and issuer of the credential. Each <a>authentication suite</a> MUST define an in-band
+    mechanism by which a verifier, without prior configuration, discovers the verification material
+    for a credential and confirms that the <a>issuer</a> is authorized to make claims about the
+    <a>subject</a>, starting from identifiers in the credential (for example, by dereferencing the
+    <a>subject</a> or <a>issuer</a> URI). A verifier MAY apply locally configured policy, such as
+    allow or deny lists of issuers, to restrict which validated credentials it accepts; such out-of-band
+    configuration MUST NOT be required in order to validate a credential.
   </p>
 
   <p>

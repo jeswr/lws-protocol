@@ -38,6 +38,12 @@
             publisher: "OASIS",
             date: "March 2005",
           },
+          "SAML2-METADATA": {
+            title: "Metadata for the OASIS Security Assertion Markup Language (SAML) V2.0",
+            href: "https://docs.oasis-open.org/security/saml/v2.0/saml-metadata-2.0-os.pdf",
+            publisher: "OASIS",
+            date: "March 2005",
+          },
         },
       };
     </script>
@@ -157,6 +163,14 @@
         In order to validate a SAML <a>authentication credential</a>, there must be a trust relationship with the issuing identity provider.
         This specification does not define how a validating entity establishes a trust relationship with an identity provider,
         expecting these relationships to be established out-of-band.
+      </p>
+
+      <p class="issue">
+        This suite does not define the in-band trust mechanism required by [[LWS10-CORE]], so verifiers
+        that implement it interoperate only with identity providers they have been configured to trust.
+        Possible remedies are to resolve <code>saml:Issuer</code> to SAML metadata at its well-known location
+        [[SAML2-METADATA]] and to link the subject to that issuer as in the OpenID Connect suite, or to
+        restrict this suite to closed deployments.
       </p>
 
       <p>
