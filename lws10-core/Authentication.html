@@ -1,8 +1,9 @@
 <p>
   This section defines a mechanism for identifying <a>agents</a> and end users that interact
-  with a linked web storage server. This specification does not mandate a particular
-  format for an <a>authentication credential</a>, though it does describe how existing identity systems
-  can be used in conjunction with the linked web storage authorization framework.
+  with a linked web storage server. This specification does not restrict the
+  format of an <a>authentication credential</a>, though it does describe how existing identity systems
+  can be used in conjunction with the linked web storage authorization framework, and requires one
+  <a>authentication suite</a> as a common baseline (see <a href="#authentication-mti-suite"></a>).
 </p>
 
 <section id="authentication-data-model">
@@ -36,6 +37,18 @@
 
   <p>
     An <a>authentication credential</a> MUST be signed. It is RECOMMENDED that the signature uses asymmetric cryptography.
+  </p>
+</section>
+
+<section id="authentication-mti-suite">
+  <h3>Mandatory-to-Implement Authentication Suite</h3>
+  <p>
+    To ensure that any <a>LWS Client</a> can authenticate with any <a>LWS Server</a>, an authorization server
+    that a storage server identifies in an <code>as_uri</code> challenge parameter MUST support the
+    OpenID Connect <a>authentication suite</a> [[!LWS10-AUTHN-OPENID]]. It MAY support additional
+    <a data-lt="authentication suite">authentication suites</a>.
+    An <a>LWS Client</a> that obtains <a data-lt="authentication credential">authentication credentials</a>
+    for end users SHOULD support [[!LWS10-AUTHN-OPENID]].
   </p>
 </section>
 
