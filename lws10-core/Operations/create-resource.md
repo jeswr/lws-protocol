@@ -21,7 +21,7 @@ The **create resource** operation adds a new [served resource](#dfn-served-resou
 * **Conflict:** A resource with the generated identifier already exists, or there is another state conflict.
 * **Unknown Error:** An unexpected internal error occurred.
 
-New resources are created using POST to a target <a>container</a> URI, with the server assigning the final identifier. Clients MAY provide initial user-managed metadata for the new resource by including one or more `Link` headers in the POST request, following the syntax of Web Linking in [[RFC8288]]. Server-managed metadata MUST be generated automatically by the server upon creation and MUST NOT be overridden by client-provided links.
+New resources are created using POST to a target <a>container</a> URI, with the server assigning the final identifier. Clients MAY convey the identity hint in a `Slug` header [[!RFC5023]], as in [[LDP]]; the server MAY use it. Clients MAY provide initial user-managed metadata for the new resource by including one or more `Link` headers in the POST request, following the syntax of Web Linking in [[RFC8288]]. Server-managed metadata MUST be generated automatically by the server upon creation and MUST NOT be overridden by client-provided links.
 
 On success, the server MUST return the 201 status code with the new URI in the `Location` header. The server MUST include `Link` headers for key server-managed metadata, including a link to the parent <a>container</a> (`rel="up"`), and a link to the created resource's dedicated <a>linkset resource</a> (`rel="linkset"; type="application/linkset+json"`). Additional links SHOULD include `rel="type"` (indicating `http://www.w3.org/ns/ldp#BasicContainer` or `https://www.w3.org/ns/lws#DataResource`). The body MAY be empty or include a minimal representation of the resource. All metadata creation and linking MUST be atomic with the resource creation to maintain consistency.
 
@@ -37,6 +37,7 @@ POST /alice/notes/ HTTP/1.1
 Host: example.com
 Authorization: Bearer <token>
 Content-Type: text/plain
+Slug: shoppinglist.txt
 Content-Length: 47
 
 milk
@@ -67,6 +68,7 @@ POST /alice/ HTTP/1.1
 Host: example.com
 Authorization: Bearer <token>
 Content-Length: 0
+Slug: notes
 Link: <http://www.w3.org/ns/ldp#BasicContainer>; rel="type"
 ```
 

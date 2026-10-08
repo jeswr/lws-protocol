@@ -13,7 +13,7 @@ The URI `https://www.w3.org/ns/lws/v1` identifies the <dfn>LWS profile</dfn> [[R
 
 #### Content Negotiation
 
-Servers MUST honor requests for `application/lws+json` on <a>containers</a>, and MUST set the `Content-Type` response header to the media type of the selected representation.
+Servers MUST honor requests for `application/lws+json` and for `text/turtle` [[!RDF12-TURTLE]] on <a>containers</a>, and MUST set the `Content-Type` response header to the media type of the selected representation. So that [[LDP]] clients can read <a>containers</a>, a `text/turtle` response without the `profile` parameter MUST contain at least the triples of the <a>LWS profile</a> representation of the same <a>container</a> state and page.
 
 A client requests a representation in the <a>LWS profile</a> by including the <a>LWS profile</a> URI in the `profile` parameter of an RDF media type. RDF media types that define this parameter include `application/ld+json` [[JSON-LD11]], `text/turtle` [[RDF12-TURTLE]], `application/trig` [[RDF12-TRIG]], `application/n-triples` [[RDF12-N-TRIPLES]], and `application/n-quads` [[RDF12-N-QUADS]]. If the server selects such a media type, the response MUST conform to the <a>LWS profile</a>, that is, it MUST be RDF isomorphic to the `application/lws+json` representation, and its `Content-Type` MUST include the same `profile` parameter. A server MUST NOT select such a media type if it cannot produce a representation in the <a>LWS profile</a> in it.
 
