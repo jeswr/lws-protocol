@@ -59,7 +59,7 @@ Content-Type: application/lws+json
 ETag: "container-etag-789"
 Link: </alice/notes/.meta>; rel="linkset"; type="application/linkset+json"
 Link: </alice/>; rel="up"
-Link: <https://www.w3.org/ns/lws#Container>; rel="type"
+Link: <http://www.w3.org/ns/ldp#BasicContainer>; rel="type"
 
 {
   "@context": "https://www.w3.org/ns/lws/v1",
@@ -102,16 +102,18 @@ Content-Type: text/turtle; profile="https://www.w3.org/ns/lws/v1"
 ETag: "container-etag-789"
 Link: </alice/notes/.meta>; rel="linkset"; type="application/linkset+json"
 Link: </alice/>; rel="up"
-Link: <https://www.w3.org/ns/lws#Container>; rel="type"
+Link: <http://www.w3.org/ns/ldp#BasicContainer>; rel="type"
 
 @prefix lws: <https://www.w3.org/ns/lws#> .
+@prefix ldp: <http://www.w3.org/ns/ldp#> .
+@prefix as: <https://www.w3.org/ns/activitystreams#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix schema: <http://schema.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<> a lws:Container ;
-  lws:totalItems 2 ;
-  lws:items <shoppinglist.txt>, <todo.json> .
+<> a ldp:BasicContainer ;
+  as:totalItems 2 ;
+  ldp:contains <shoppinglist.txt>, <todo.json> .
 
 <shoppinglist.txt> a lws:DataResource ;
   dcterms:format "text/plain" ;
@@ -142,31 +144,33 @@ Link: <https://www.w3.org/ns/lws/v1>; rel="profile"
 ETag: "container-etag-789"
 Link: </alice/notes/.meta>; rel="linkset"; type="application/linkset+json"
 Link: </alice/>; rel="up"
-Link: <https://www.w3.org/ns/lws#Container>; rel="type"
+Link: <http://www.w3.org/ns/ldp#BasicContainer>; rel="type"
 
 <?xml version="1.0" encoding="utf-8"?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
          xmlns:lws="https://www.w3.org/ns/lws#"
+         xmlns:ldp="http://www.w3.org/ns/ldp#"
+         xmlns:as="https://www.w3.org/ns/activitystreams#"
          xmlns:dcterms="http://purl.org/dc/terms/"
          xmlns:schema="http://schema.org/">
-  <lws:Container rdf:about="">
-    <lws:totalItems rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2</lws:totalItems>
-    <lws:items>
+  <ldp:BasicContainer rdf:about="">
+    <as:totalItems rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2</as:totalItems>
+    <ldp:contains>
       <lws:DataResource rdf:about="shoppinglist.txt">
         <dcterms:format>text/plain</dcterms:format>
         <schema:size rdf:datatype="http://www.w3.org/2001/XMLSchema#long">47</schema:size>
         <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2025-11-24T12:00:00Z</dcterms:modified>
       </lws:DataResource>
-    </lws:items>
-    <lws:items>
+    </ldp:contains>
+    <ldp:contains>
       <lws:DataResource rdf:about="todo.json">
         <rdf:type rdf:resource="http://example.org/customType"/>
         <dcterms:format>application/json</dcterms:format>
         <schema:size rdf:datatype="http://www.w3.org/2001/XMLSchema#long">2048</schema:size>
         <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2025-11-24T13:00:00Z</dcterms:modified>
       </lws:DataResource>
-    </lws:items>
-  </lws:Container>
+    </ldp:contains>
+  </ldp:BasicContainer>
 </rdf:RDF>
 ```
 

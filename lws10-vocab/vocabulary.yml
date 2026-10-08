@@ -33,10 +33,11 @@ class:
     comment: An HTTP resource that supports the read operations defined by the Linked Web Storage Protocol.
     defined_by: https://www.w3.org/TR/lws-core/#dfn-storage-resource
 
-  - id: Container
-    label: Container
-    comment: A resource that contains other resources.
-    upper_value: StorageResource
+  - id: ldp:BasicContainer
+    label: Basic Container
+    known_as: Container
+    external: true
+    comment: A resource that contains other resources. LWS containers use this class from the Linked Data Platform vocabulary.
 
   - id: DataResource
     label: Data Resource
@@ -92,14 +93,17 @@ class:
     comment: A service endpoint for managing access requests.
 
 property:
-  - id: items
-    label: items
-    domain: lws:Container
-    comment: The list of resources contained in a container.
+  - id: ldp:contains
+    label: contains
+    known_as: items
+    domain: ldp:BasicContainer
+    external: true
+    comment: A resource contained in a container. Used for the `items` of an LWS container.
 
-  - id: totalItems
+  - id: as:totalItems
     label: total items
-    domain: lws:Container
+    domain: ldp:BasicContainer
+    external: true
     comment: The total number of items in a container.
 
   - id: dct:format

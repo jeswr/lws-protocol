@@ -22,7 +22,7 @@ The <a>containment</a> relationship between a resource and its parent <a>contain
 Link: </alice/notes/>; rel="up"
 ```
 
-A <a>container</a>'s members are listed in its representation using the `items` property. The server manages this list; clients cannot modify it directly. Membership changes occur as a side effect of resource creation and deletion.
+A <a>container</a>'s members are listed in its representation using the `items` property. <a>Containment</a> uses the Linked Data Platform vocabulary (`ldp:BasicContainer`, `ldp:contains`) [[LDP]]; an LWS server is not otherwise required to conform to [[LDP]]. The server manages this list; clients cannot modify it directly. Membership changes occur as a side effect of resource creation and deletion.
 
 ### Containment Integrity
 
@@ -37,7 +37,7 @@ The server MUST maintain <a>containment</a> integrity at all times:
 
 Resources are identified by URIs. The URI of a resource is independent of its position in the <a>containment</a> hierarchy. Servers assign URIs during resource creation and MAY incorporate client hints, but clients SHOULD NOT assume that URI structure reflects containment.
 
-<a>Containment</a> relationships are expressed through metadata (`rel="up"` links and the `items` property in <a>container</a> representations), not through URI path structure. This separation allows servers flexibility in URI assignment while maintaining a well-defined organizational model.
+<a>Containment</a> relationships are expressed through metadata (`rel="up"` links and the `items` property in <a>container</a> representations), not through URI path structure, as in [[LDP]]. This separation allows servers flexibility in URI assignment while maintaining a well-defined organizational model.
 
 ### Container Membership and Authorization
 
