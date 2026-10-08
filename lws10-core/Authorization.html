@@ -31,8 +31,12 @@ client (called in this specification <dfn data-cite="RFC6749#section-1.1">author
   </p>
 
   <p>
-    The interaction between the authorization server and the storage server is out of scope of this specification.
     The authorization server may be the same server as the storage server or it may be a separate entity.
+    No interaction between them is required beyond what this section defines: the authorization server publishes its
+    <a href="#authorization-server-metadata">metadata</a> and signing keys, and the storage server
+    <a href="#authorization-token-validation-verification">validates</a> the access tokens it issues using them.
+    Any conforming storage server can therefore accept access tokens from any conforming authorization server.
+    Which authorization servers a storage server trusts for a given <code>realm</code> is a matter of deployment configuration.
   </p>
 
   <section id="authorization-server-discovery">
@@ -324,15 +328,19 @@ Authorization: Bearer eyJ0eXAiOiJhcytqd3QiLCJhbGciOiJFUzI1NiIs...DeWt4QuZXso
 
       <ul>
         <li>
-          JWT Signature Validation: Verify the JWT signature using the authorization server's public key retrieved from the
-          <code>jwks_uri</code> specified in the authorization server metadata. Storage servers SHOULD cache these keys and
-          MUST support key rotation.
+          Issuer Validation: Verify the <code>iss</code> claim is identical to the <code>as_uri</code> that the storage server
+          advertises for the target resource, i.e. an authorization server it is configured to trust for that <code>realm</code>.
         </li>
         <li>
-          Issuer Validation: Verify the <code>iss</code> claim matches the expected authorization server identifier.
+          JWT Signature Validation: Verify the JWT as described in Section 4 of [[!RFC9068]], including the <code>typ</code>
+          header value <code>at+jwt</code>, using a key from the <code>jwks_uri</code> of the
+          <a href="#authorization-server-metadata">authorization server metadata</a> for the <code>iss</code> value.
+          The <code>issuer</code> in that metadata MUST be identical to the <code>iss</code> claim [[!RFC8414]].
+          Storage servers SHOULD cache this metadata and these keys and MUST support key rotation.
         </li>
         <li>
-          Audience Validation: Verify the <code>aud</code> claim contains exactly one value and this value is a URI identifying the storage server which logically contains the target resource.
+          Audience Validation: Verify the <code>aud</code> claim contains exactly one value and this value is the <code>realm</code>
+          that the storage server advertises for the target resource.
         </li>
         <li>
           Temporal Validation, subject to an allowable clock skew between systems.
@@ -349,6 +357,11 @@ Authorization: Bearer eyJ0eXAiOiJhcytqd3QiLCJhbGciOiJFUzI1NiIs...DeWt4QuZXso
           </ul>
         </li>
       </ul>
+
+      <p>
+        A storage server MAY additionally use OAuth 2.0 Token Introspection [[RFC7662]] when the authorization server metadata
+        includes an <code>introspection_endpoint</code>; this does not replace the checks above.
+      </p>
 
       <p>
         If validation fails, the storage server MUST return 401 Unauthorized with a <code>WWW-Authenticate</code> header
