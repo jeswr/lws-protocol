@@ -94,9 +94,9 @@ WWW-Authenticate: Bearer as_uri="https://authorization.example",
     <ul>
       <li>
         <dfn><code>subject_token_types_supported</code></dfn>
-        OPTIONAL. JSON array containing a list of valid <code>subject_token_type</code> values
-        that can be supplied at the authorization server's token endpoint. An authorization server
-        SHOULD advertise the subject tokens that it supports by including this entry in the server metadata document.
+        REQUIRED. JSON array containing a list of valid <code>subject_token_type</code> values
+        that can be supplied at the authorization server's token endpoint, one for each
+        <a>authentication suite</a> the authorization server supports.
       </li>
       <li>
         <dfn><code>subject_identifier_types_supported</code></dfn>
