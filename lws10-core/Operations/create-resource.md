@@ -28,7 +28,7 @@ On success, the server MUST return the 201 status code with the new URI in the `
 **POST (to a container URI)** – *Create with server-assigned name:*
 Use POST to add a new resource inside an existing <a>container</a>. The server assigns the identifier for the resource. Clients indicate the type of resource to create as follows:
 
-- To create a **<a>Container</a>**, the client MUST include a `Link` header with `rel="type"` pointing to the Basic Container type, as in [[LDP]]: `Link: <http://www.w3.org/ns/ldp#BasicContainer>; rel="type"`.
+- To create a **<a>Container</a>**, the client MUST include a `Link` header with `rel="type"` pointing to the Basic Container type, as in [[LDP]]: `Link: <http://www.w3.org/ns/ldp#BasicContainer>; rel="type"`. A server MAY accept content in such a request (for example, initial RDF as in [[LDP]]); otherwise, it MUST reject a request that has content with `415 (Unsupported Media Type)` [[!RFC9110]].
 - To create a **<a>Data resource</a>**, the client includes the resource content in the request body with the appropriate `Content-Type` header.
 
 **Example (POST to create a new data resource):**
