@@ -23,7 +23,7 @@ The **create resource** operation adds a new [served resource](#dfn-served-resou
 
 New resources are created using POST to a target <a>container</a> URI, with the server assigning the final identifier. Clients MAY provide initial user-managed metadata for the new resource by including one or more `Link` headers in the POST request, following the syntax of Web Linking in [[RFC8288]]. Server-managed metadata MUST be generated automatically by the server upon creation and MUST NOT be overridden by client-provided links.
 
-On success, the server MUST return the 201 status code with the new URI in the `Location` header. The server MUST include `Link` headers for key server-managed metadata, including a link to the parent <a>container</a> (`rel="up"`), and a link to the created resource's dedicated <a>linkset resource</a> (`rel="linkset"; type="application/linkset+json"`). Additional links SHOULD include `rel="type"` (indicating `http://www.w3.org/ns/ldp#BasicContainer` or `https://www.w3.org/ns/lws#DataResource`). The body MAY be empty or include a minimal representation of the resource. All metadata creation and linking MUST be atomic with the resource creation to maintain consistency.
+On success, the server MUST return the 201 status code with the new URI in the `Location` header. The server MUST include `Link` headers for key server-managed metadata, including a link to the parent <a>container</a> (`rel="up"`), and a link to the created resource's dedicated <a>linkset resource</a> (`rel="linkset"; type="application/linkset+json"`). For a <a>data resource</a>, additional links SHOULD include `rel="type"` indicating `https://www.w3.org/ns/lws#DataResource`. The body MAY be empty or include a minimal representation of the resource. All metadata creation and linking MUST be atomic with the resource creation to maintain consistency.
 
 **POST (to a container URI)** – *Create with server-assigned name:*
 Use POST to add a new resource inside an existing <a>container</a>. The server assigns the identifier for the resource. Clients indicate the type of resource to create as follows:
@@ -76,10 +76,9 @@ HTTP/1.1 201 Created
 Location: /alice/notes/
 Link: </alice/notes/.meta>; rel="linkset"; type="application/linkset+json"
 Link: </alice/>; rel="up"
-Link: <http://www.w3.org/ns/ldp#BasicContainer>; rel="type"
 Content-Length: 0
 ```
-This creates a new <a>container</a> at `/alice/notes/`, with server-generated metadata including `rel="type"` as `http://www.w3.org/ns/ldp#BasicContainer`.
+This creates a new <a>container</a> at `/alice/notes/`.
 
 **Additional notes on Create (HTTP binding):**
 * POST is not idempotent. Repeating it may create duplicates; clients SHOULD avoid unintentional retries or use unique identifiers/checks to prevent this.

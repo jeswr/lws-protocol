@@ -6,7 +6,7 @@ Retrieves the representation of an existing resource or the listing of a <a>cont
     * For <a>containers</a>, the server returns a listing of member resources which MAY be filtered based on <a href="#container-membership-and-authorization">authorization</a>. Listings must include core metadata for each member.
 * **Outcome**: The requested representation or a notification of failure.
 
-The read resource operation requests a resource representation with HTTP GET requests (and HEAD for header-only requests). The behavior differs depending on whether the target URL is a <a>container</a> or a non-container resource (<a>data resource</a>). Servers MUST distinguish resource types via metadata. All responses MUST integrate with metadata as defined in Section 8.1, including `Link` headers for key relations such as `rel="linkset"`, `rel="up"`, and `rel="type"`. Servers MUST ensure atomicity between the resource state and its metadata during reads.
+The read resource operation requests a resource representation with HTTP GET requests (and HEAD for header-only requests). The behavior differs depending on whether the target URL is a <a>container</a> or a non-container resource (<a>data resource</a>). Servers MUST distinguish resource types via metadata. All responses MUST integrate with metadata as defined in Section 8.1, including `Link` headers for key relations such as `rel="linkset"`, `rel="up"`, and, for <a>data resources</a>, `rel="type"`. Servers MUST ensure atomicity between the resource state and its metadata during reads.
 
 **GET (non-container resource)** – *Retrieve a resource's content:*
 Send GET to the resource URI for full content (if authorized). Respond with 200 OK, body containing the data, and Content-Type matching the stored media type. Servers MUST support range requests per [[!RFC7233]] for partial retrieval. Responses MUST include an `ETag` header as defined in [[RFC9110]].
@@ -59,7 +59,6 @@ Content-Type: application/lws+json
 ETag: "container-etag-789"
 Link: </alice/notes/.meta>; rel="linkset"; type="application/linkset+json"
 Link: </alice/>; rel="up"
-Link: <http://www.w3.org/ns/ldp#BasicContainer>; rel="type"
 
 {
   "@context": "https://www.w3.org/ns/lws/v1",
@@ -102,17 +101,15 @@ Content-Type: text/turtle; profile="https://www.w3.org/ns/lws/v1"
 ETag: "container-etag-789"
 Link: </alice/notes/.meta>; rel="linkset"; type="application/linkset+json"
 Link: </alice/>; rel="up"
-Link: <http://www.w3.org/ns/ldp#BasicContainer>; rel="type"
 
 @prefix lws: <https://www.w3.org/ns/lws#> .
 @prefix ldp: <http://www.w3.org/ns/ldp#> .
-@prefix as: <https://www.w3.org/ns/activitystreams#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix schema: <http://schema.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 <> a ldp:BasicContainer ;
-  as:totalItems 2 ;
+  lws:totalItems 2 ;
   ldp:contains <shoppinglist.txt>, <todo.json> .
 
 <shoppinglist.txt> a lws:DataResource ;
@@ -144,17 +141,15 @@ Link: <https://www.w3.org/ns/lws/v1>; rel="profile"
 ETag: "container-etag-789"
 Link: </alice/notes/.meta>; rel="linkset"; type="application/linkset+json"
 Link: </alice/>; rel="up"
-Link: <http://www.w3.org/ns/ldp#BasicContainer>; rel="type"
 
 <?xml version="1.0" encoding="utf-8"?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
          xmlns:lws="https://www.w3.org/ns/lws#"
          xmlns:ldp="http://www.w3.org/ns/ldp#"
-         xmlns:as="https://www.w3.org/ns/activitystreams#"
          xmlns:dcterms="http://purl.org/dc/terms/"
          xmlns:schema="http://schema.org/">
   <ldp:BasicContainer rdf:about="">
-    <as:totalItems rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2</as:totalItems>
+    <lws:totalItems rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2</lws:totalItems>
     <ldp:contains>
       <lws:DataResource rdf:about="shoppinglist.txt">
         <dcterms:format>text/plain</dcterms:format>
@@ -180,7 +175,7 @@ Link: <http://www.w3.org/ns/ldp#BasicContainer>; rel="type"
 
 In this example, `/alice/notes/` is a <a>container</a>. The response uses JSON-LD with the LWS context, listing members with required metadata. Each item includes its `type`, `id`, `format`, `size`, and `modified` timestamp as flat properties.
 
-In all cases, the server MUST include the following metadata in the response headers: an `ETag` header as defined in [[RFC9110]], and `Link` headers with `rel="linkset"`, `rel="up"`, and `rel="type"` indicating it is a <a>container</a>.
+In all cases, the server MUST include the following metadata in the response headers: an `ETag` header as defined in [[RFC9110]], and `Link` headers with `rel="linkset"` and `rel="up"`.
 
 **HEAD (any resource or <a>container</a>)** – *Headers/metadata only:*
 The LWS server MUST support HEAD [[RFC9110]] for both <a>containers</a> and non-containers, returning the same headers as GET (including `Content-Type`, `Link` for metadata) but without a body. This enables metadata retrieval without transferring content.
