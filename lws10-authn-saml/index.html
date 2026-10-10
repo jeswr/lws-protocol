@@ -161,20 +161,22 @@
 
       <p>
         In order to validate a SAML <a>authentication credential</a>, there must be a trust relationship with the issuing identity provider.
-        This specification does not define how a validating entity establishes a trust relationship with an identity provider,
-        expecting these relationships to be established out-of-band.
-      </p>
-
-      <p class="issue">
-        This suite does not define the in-band trust mechanism required by [[LWS10-CORE]], so verifiers
-        that implement it interoperate only with identity providers they have been configured to trust.
-        Possible remedies are to resolve <code>saml:Issuer</code> to SAML metadata at its well-known location
-        [[SAML2-METADATA]] and to link the subject to that issuer as in the OpenID Connect suite, or to
-        restrict this suite to closed deployments.
       </p>
 
       <p>
-        Using a trust relationship with an issuer, the signature of the credential MUST be validated as described in SAML Core, section 5 [[!SAML2-CORE]].
+        In the absence of a pre-existing trust relationship, the verifier MUST dereference the <code>saml:NameID</code> value.
+        The resulting resource MUST be a valid controlled identifier document [[!CID-1.0]] with an <code>id</code> value equal to the subject identifier,
+        containing a service object whose <code>serviceEndpoint</code> value is equal to the <code>saml:Issuer</code> value and whose <code>type</code>
+        value is equal to <code>https://www.w3.org/ns/lws#SamlIdentityProvider</code>.
+        The verifier MUST obtain the identity provider's metadata by dereferencing the <code>saml:Issuer</code> value as described in
+        [[!SAML2-METADATA]] Section 4.1; the metadata's <code>entityID</code> MUST be identical to the <code>saml:Issuer</code> value,
+        and the signing key MUST be taken from a <code>KeyDescriptor</code> of its <code>IDPSSODescriptor</code> whose <code>use</code>
+        attribute is <code>signing</code> or absent.
+        A verifier MUST reject the <a>authentication credential</a> if any of these conditions is not met.
+      </p>
+
+      <p>
+        The signature of the credential MUST be validated as described in SAML Core, section 5 [[!SAML2-CORE]].
       </p>
     </section>
 
@@ -227,11 +229,9 @@
       </p>
 
       <p>
-        The trust model for SAML in this
-        specification relies on out-of-band trust establishment with identity providers.
-        This means there is no subject identifier dereference step during validation, which
-        avoids the associated metadata leakage. However, the out-of-band trust relationship
-        itself reveals which identity providers are used within a deployment.
+        Without a pre-existing trust relationship, validation dereferences the subject identifier and the
+        identity provider's metadata. This can reveal to the hosting servers which verifiers are validating
+        credentials for a given subject. Verifiers are encouraged to cache these documents.
       </p>
 
       <p>
