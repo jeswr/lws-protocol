@@ -56,6 +56,11 @@ class:
     comment: An OpenID Connect identity provider service.
     defined_by: https://www.w3.org/TR/lws-authn-openid/
 
+  - id: SamlIdentityProvider
+    label: SAML Identity Provider
+    comment: A SAML 2.0 identity provider service.
+    defined_by: https://www.w3.org/TR/lws-authn-saml/
+
   - id: Notification
     label: Notification
     comment: A notification envelope describing an event that occurred on a resource.

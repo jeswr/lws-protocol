@@ -99,7 +99,8 @@
 
       <ul>
         <li>
-          The ID Token MUST NOT use "none" as the signing algorithm.
+          The ID Token MUST be signed with an asymmetric algorithm; it MUST NOT use "none" or a MAC-based
+          algorithm such as "HS256".
         </li>
 
         <li>
@@ -163,8 +164,13 @@ signature
       <p>
         The verifier MUST use the subject's controlled identifier document to locate a service object whose <code>serviceEndpoint</code> value
         is equal to the value of the <code>iss</code> claim from the <a>authentication credential</a>, and whose <code>type</code> value is equal to <code>https://www.w3.org/ns/lws#OpenIdProvider</code>.
-        The verifier MUST perform OpenID Connect Discovery to locate the public portion of the JSON Web Key (JWK) used to sign the <a>authentication credential</a>.
+        The verifier MUST perform OpenID Connect Discovery using the <code>iss</code> value as the Issuer; the <code>issuer</code> value in the
+        returned provider metadata MUST be identical to <code>iss</code> [[!OPENID-CONNECT-DISCOVERY]], and the public portion of the
+        JSON Web Key (JWK) used to sign the <a>authentication credential</a> MUST be obtained from its <code>jwks_uri</code>.
         The JWT MUST be validated as described by OpenID Connect Core Section 3.1.3.7 [[!OPENID-CONNECT-CORE]].
+        A verifier MUST reject the <a>authentication credential</a> if the dereferenced document's <code>id</code> differs from <code>sub</code>,
+        if no such service object exists, if the metadata <code>issuer</code> differs from <code>iss</code>, or if the signature uses
+        "none" or a MAC-based algorithm.
       </p>
 
       <p>

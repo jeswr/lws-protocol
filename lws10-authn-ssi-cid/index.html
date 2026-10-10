@@ -170,8 +170,15 @@ signature
       </p>
 
       <p>
+        A verifier MUST reject the <a>authentication credential</a> if the <code>sub</code>, <code>iss</code>, and <code>client_id</code> values
+        are not identical, or if the dereferenced document's <code>id</code> differs from <code>sub</code>.
+      </p>
+
+      <p>
         The verifier MUST use the <code>kid</code> (key id) value from the signed JWT header to identify a verification method from the subject's controlled identifier document.
         This process is described in [[!CID-1.0]] Section 3.3.
+        The verification method MUST be associated with the subject by the <code>authentication</code> verification relationship [[!CID-1.0]];
+        a verifier MUST reject the <a>authentication credential</a> otherwise.
         Using the selected verification method from the controlled identifier document, the signature of the JWT MUST be validated as described in [[!RFC7515]], Section 5.2.
       </p>
 
