@@ -19,8 +19,10 @@
 
   <ul>
     <li><dfn>subject</dfn> <strong>REQUIRED</strong> &mdash; an identifier for an end user. This MUST be a URI.
-    Each <a>authentication suite</a> MUST specify at least one subject identifier scheme that every verifier
-    implementing that suite supports; support for other schemes is OPTIONAL.</li>
+    Each <a>authentication suite</a> MUST specify at least one subject identifier scheme, together with the
+    method for schemes that have methods (such as DIDs), that every verifier implementing that suite supports;
+    support for other schemes is OPTIONAL. Issuers SHOULD use such a scheme for the subject, since a credential
+    using another scheme validates only at verifiers that support it.</li>
     <li><dfn>issuer</dfn> <strong>REQUIRED</strong> &mdash; an identifier for the entity that issued the <a>authentication credential</a>. This MUST be a URI.</li>
     <li><dfn>client</dfn> <strong>REQUIRED</strong> &mdash; an identifier for a client application. This SHOULD be a URI.</li>
     <li><dfn>audience restriction</dfn> <strong>RECOMMENDED</strong> &mdash; a list of values that SHOULD include an authorization server identifier.</li>
