@@ -32,6 +32,8 @@ pagination for <a>containers</a> whose membership exceeds a server-determined th
 Pagination is link-based: the server provides pagination URIs via HTTP `Link` headers [[!RFC8288]],
 allowing clients to navigate the full listing without relying on numeric offsets.
 
+<p class="note">LWS pagination is not LDP Paging [[LDP-PAGING]], which [[LDP]] does not require. An [[LDP]] client that does not follow these links sees only the current page, which is why [](#content-negotiation) discourages paginating an unprofiled `text/turtle` response.</p>
+
 When a listing is paginated, the response body contains only the current page of items. The
 composite resource's `id`, `type`, and `totalItems` properties reflect the full membership, while `items`
 contains only the resources on the current page.
@@ -75,6 +77,8 @@ Content-Type: application/lws+json
 ETag: "photos-page1-etag"
 Link: </alice/photos/.meta>; rel="linkset"; type="application/linkset+json"
 Link: </alice/>; rel="up"
+Link: <http://www.w3.org/ns/ldp#BasicContainer>; rel="type"
+Link: <http://www.w3.org/ns/ldp#Resource>; rel="type"
 Link: </alice/photos/?page=1>; rel="first"
 Link: </alice/photos/?page=3>; rel="last"
 Link: </alice/photos/?page=2>; rel="next"
@@ -117,6 +121,8 @@ Content-Type: application/lws+json
 ETag: "photos-page2-etag"
 Link: </alice/photos/.meta>; rel="linkset"; type="application/linkset+json"
 Link: </alice/>; rel="up"
+Link: <http://www.w3.org/ns/ldp#BasicContainer>; rel="type"
+Link: <http://www.w3.org/ns/ldp#Resource>; rel="type"
 Link: </alice/photos/?page=1>; rel="first"
 Link: </alice/photos/?page=1>; rel="prev"
 Link: </alice/photos/?page=3>; rel="next"
