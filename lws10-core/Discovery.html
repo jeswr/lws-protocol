@@ -81,9 +81,9 @@
     <h4>Storage Capabilities</h4>
 
     <p>
-      A <a>storage description</a> MUST advertise every feature defined by this specification or by an LWS
-      extension specification that the <a>storage</a> supports, so that a client can determine what the
-      <a>storage</a> supports without probing it. This comprises:
+      A <a>storage description</a> MUST advertise each feature the <a>storage</a> supports for which this
+      specification or an LWS extension specification defines a service type or capability type, so that a
+      client can discover those features without probing. This comprises:
     </p>
     <ul>
       <li>
@@ -96,8 +96,8 @@
         a <code>service</code> entry whose <code>type</code> equals <code>AuthorizationServer</code> for each
         authorization server whose access tokens the <a>storage</a> accepts, with a <code>serviceEndpoint</code>
         equal to that server's issuer identifier (the <code>as_uri</code> value of
-        <a href="#authorization-server-discovery"></a>). The <a>authentication suites</a> accepted are advertised
-        in that server's metadata (<a href="#authorization-server-metadata"></a>);
+        <a href="#authorization-server-discovery"></a>). The subject token types and subject identifier types
+        that server accepts are advertised in its metadata (<a href="#authorization-server-metadata"></a>);
       </li>
       <li>
         a <code>capability</code> entry for each other supported feature that an LWS specification defines as a
@@ -105,7 +105,7 @@
       </li>
     </ul>
     <p>
-      A client MAY treat a feature that is not advertised as unsupported.
+      A client MAY treat such a feature that is not advertised as unsupported.
       A <a>storage description</a> MAY also contain descriptions of other capabilities and services.
     </p>
   </section>
