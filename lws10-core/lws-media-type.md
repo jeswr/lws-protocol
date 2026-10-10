@@ -1,6 +1,6 @@
 ### LWS Media Type
 
-An LWS <a>storage description</a> MUST be serializable with the `application/cid` media type registered by [[!CID-1.0]].
+A server MUST support the `application/cid` media type registered by [[!CID-1.0]] for an LWS <a>storage description</a>.
 This specification defines no separate media type for it; a client distinguishes a <a>storage description</a> from other controlled identifier documents by its `type` value `Storage` (see [](#storage-description-data-model)).
 
 An LWS <a>container representation</a> MUST support the media type `application/lws+json`.

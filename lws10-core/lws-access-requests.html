@@ -44,15 +44,18 @@
   "type": "Storage",
   "service": [
     {
+      "id": "https://storage.example/#root",
       "type": "StorageRoot",
       "serviceEndpoint": "https://storage.example/root/"
     },
     {
+      "id": "https://storage.example/#access-request",
       "type": "AccessRequestService",
       "serviceEndpoint": "https://access.example/request/",
       "conformsTo": ["https://www.w3.org/ns/lws#AccessProfile"]
     },
     {
+      "id": "https://storage.example/#access-grant",
       "type": "AccessGrantService",
       "serviceEndpoint": "https://access.example/grant/",
       "conformsTo": ["https://www.w3.org/ns/lws#AccessProfile"]

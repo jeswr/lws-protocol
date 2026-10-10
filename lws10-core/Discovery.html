@@ -38,7 +38,7 @@
         where each service is described by a map containing the following properties. Additional properties MAY be present.
         The set MUST contain a service whose <code>type</code> equals <code>StorageRoot</code>.
         <ul>
-          <li><strong>`id`</strong> - the <code>id</code> property is OPTIONAL. If present, its value MUST be a URI.</li>
+          <li><strong>`id`</strong> - the <code>id</code> property is REQUIRED. Its value MUST be a URI.</li>
           <li><strong>`type`</strong> - the <code>type</code> property is REQUIRED. Its value MUST be a string or a set of strings.</li>
           <li><strong>`serviceEndpoint`</strong> - the <code>serviceEndpoint</code> property is REQUIRED. Its value MUST be a URI.</li>
         </ul>
@@ -54,6 +54,7 @@
   "id": "https://storage.example/",
   "type": "Storage",
   "service": [{
+    "id": "https://storage.example/#root",
     "type": "StorageRoot",
     "serviceEndpoint": "https://storage.example/root/"
   }]
@@ -71,9 +72,9 @@
     </p>
 
     <p>
-      Requests for the <a>storage</a> URI MUST return a document that conforms to the
-      <a>storage description resource</a> data model with a media type of <code>application/cid</code> [[!CID-1.0]],
-      unless content negotiation requires a different format.
+      A <code>200 (OK)</code> response to a <code>GET</code> request targeting the <a>storage</a> URI MUST contain a
+      <a>storage description resource</a> with the media type <code>application/cid</code> [[!CID-1.0]],
+      unless content negotiation selects a different representation.
     </p>
   </section>
 
@@ -100,7 +101,7 @@
     <h4>Storage Description Representation</h4>
 
     <p>
-      A <a>storage description</a> MUST be serializable with the media type <code>application/cid</code> [[!CID-1.0]].
+      A server MUST support the media type <code>application/cid</code> [[!CID-1.0]] for the <a>storage description</a>.
       The <code>@context</code> property MUST be an array starting with the URIs <code>https://www.w3.org/ns/cid/v1</code>
       and <code>https://www.w3.org/ns/lws/v1</code>.
       Other representations MAY be available via content negotiation.
@@ -133,19 +134,24 @@
     "target": ["image/png"]
   }],
   "service": [{
+    "id": "https://storage.example/#root",
     "type": "StorageRoot",
     "serviceEndpoint": "https://storage.example/root/"
   }, {
+    "id": "https://storage.example/#notification",
     "type": "NotificationService",
     "serviceEndpoint": "https://storage.example/notification/api",
     "subscriptionType": ["WebhookSubscription"]
   }, {
+    "id": "https://storage.example/#types-index",
     "type": "TypeIndexService",
     "serviceEndpoint": "https://storage.example/types/index"
   }, {
+    "id": "https://storage.example/#types-search",
     "type": "TypeSearchService",
     "serviceEndpoint": "https://storage.example/types/search"
   }, {
+    "id": "https://storage.example/#sharing",
     "type": "DataSharingService",
     "serviceEndpoint": "https://storage.example/sharing/api"
   }]
