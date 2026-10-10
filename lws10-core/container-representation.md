@@ -1,6 +1,6 @@
 ### Container Representation
 
-An LWS <dfn>container representation</dfn> describes a <a>container</a> and its contents. This section defines its required and optional properties when served as `application/lws+json`. Representations in other RDF media types can be requested through [content negotiation](#content-negotiation).
+An LWS <dfn>container representation</dfn> describes a <a>container</a> and its contents. This section defines its required and optional properties when served as `application/lws+json`. Representations in other RDF media types can be requested through [content negotiation](#content-negotiation). The representation reuses existing vocabularies: `Container` denotes `ldp:BasicContainer` and `items` denotes `ldp:contains` [[LDP]].
 
 #### Container Properties
 
@@ -73,13 +73,14 @@ The following example shows a <a>container</a> at `https://storage.example/alice
 
 ```nohighlight
 @prefix lws: <https://www.w3.org/ns/lws#> .
+@prefix ldp: <http://www.w3.org/ns/ldp#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix schema: <http://schema.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<> a lws:Container ;
+<> a ldp:BasicContainer ;
   lws:totalItems 2 ;
-  lws:items <shoppinglist.txt>, <todo.json> .
+  ldp:contains <shoppinglist.txt>, <todo.json> .
 
 <shoppinglist.txt> a lws:DataResource ;
   dcterms:format "text/plain" ;
@@ -97,10 +98,10 @@ The following example shows a <a>container</a> at `https://storage.example/alice
 <div data-tab="application/n-triples">
 
 ```nohighlight
-<https://storage.example/alice/notes/> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://www.w3.org/ns/lws#Container> .
+<https://storage.example/alice/notes/> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/ldp#BasicContainer> .
 <https://storage.example/alice/notes/> <https://www.w3.org/ns/lws#totalItems> "2"^^<http://www.w3.org/2001/XMLSchema#integer> .
-<https://storage.example/alice/notes/> <https://www.w3.org/ns/lws#items> <https://storage.example/alice/notes/shoppinglist.txt> .
-<https://storage.example/alice/notes/> <https://www.w3.org/ns/lws#items> <https://storage.example/alice/notes/todo.json> .
+<https://storage.example/alice/notes/> <http://www.w3.org/ns/ldp#contains> <https://storage.example/alice/notes/shoppinglist.txt> .
+<https://storage.example/alice/notes/> <http://www.w3.org/ns/ldp#contains> <https://storage.example/alice/notes/todo.json> .
 <https://storage.example/alice/notes/shoppinglist.txt> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://www.w3.org/ns/lws#DataResource> .
 <https://storage.example/alice/notes/shoppinglist.txt> <http://purl.org/dc/terms/format> "text/plain" .
 <https://storage.example/alice/notes/shoppinglist.txt> <http://schema.org/size> "47"^^<http://www.w3.org/2001/XMLSchema#long> .
@@ -120,26 +121,27 @@ The following example shows a <a>container</a> at `https://storage.example/alice
 <?xml version="1.0" encoding="utf-8"?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
          xmlns:lws="https://www.w3.org/ns/lws#"
+         xmlns:ldp="http://www.w3.org/ns/ldp#"
          xmlns:dcterms="http://purl.org/dc/terms/"
          xmlns:schema="http://schema.org/">
-  <lws:Container rdf:about="">
+  <ldp:BasicContainer rdf:about="">
     <lws:totalItems rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2</lws:totalItems>
-    <lws:items>
+    <ldp:contains>
       <lws:DataResource rdf:about="shoppinglist.txt">
         <dcterms:format>text/plain</dcterms:format>
         <schema:size rdf:datatype="http://www.w3.org/2001/XMLSchema#long">47</schema:size>
         <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2025-11-24T12:00:00Z</dcterms:modified>
       </lws:DataResource>
-    </lws:items>
-    <lws:items>
+    </ldp:contains>
+    <ldp:contains>
       <lws:DataResource rdf:about="todo.json">
         <rdf:type rdf:resource="http://example.org/customType"/>
         <dcterms:format>application/json</dcterms:format>
         <schema:size rdf:datatype="http://www.w3.org/2001/XMLSchema#long">2048</schema:size>
         <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2025-11-24T13:00:00Z</dcterms:modified>
       </lws:DataResource>
-    </lws:items>
-  </lws:Container>
+    </ldp:contains>
+  </ldp:BasicContainer>
 </rdf:RDF>
 ```
 
