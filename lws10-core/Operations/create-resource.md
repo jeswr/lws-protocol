@@ -21,14 +21,14 @@ The **create resource** operation adds a new [served resource](#dfn-served-resou
 * **Conflict:** A resource with the generated identifier already exists, or there is another state conflict.
 * **Unknown Error:** An unexpected internal error occurred.
 
-New resources are created using POST to a target <a>container</a> URI, with the server assigning the final identifier. Clients MAY provide initial user-managed metadata for the new resource by including one or more `Link` headers in the POST request, following the syntax of Web Linking in [[RFC8288]]. Server-managed metadata MUST be generated automatically by the server upon creation and MUST NOT be overridden by client-provided links.
+New resources are created using POST to a target <a>container</a> URI, with the server assigning the final identifier. Clients MAY convey the identity hint in a `Slug` header [[!RFC5023]], as in [[LDP]]; the server MAY use it. Clients MAY provide initial user-managed metadata for the new resource by including one or more `Link` headers in the POST request, following the syntax of Web Linking in [[RFC8288]]. Server-managed metadata MUST be generated automatically by the server upon creation and MUST NOT be overridden by client-provided links.
 
 On success, the server MUST return the 201 status code with the new URI in the `Location` header. The server MUST include `Link` headers for key server-managed metadata, including a link to the parent <a>container</a> (`rel="up"`), and a link to the created resource's dedicated <a>linkset resource</a> (`rel="linkset"; type="application/linkset+json"`). For a <a>data resource</a>, additional links SHOULD include `rel="type"` indicating `https://www.w3.org/ns/lws#DataResource`. The body MAY be empty or include a minimal representation of the resource. All metadata creation and linking MUST be atomic with the resource creation to maintain consistency.
 
 **POST (to a container URI)** – *Create with server-assigned name:*
 Use POST to add a new resource inside an existing <a>container</a>. The server assigns the identifier for the resource. Clients indicate the type of resource to create as follows:
 
-- To create a **<a>Container</a>**, the client MUST include a `Link` header with `rel="type"` pointing to the Basic Container type, as in [[LDP]]: `Link: <http://www.w3.org/ns/ldp#BasicContainer>; rel="type"`.
+- To create a **<a>Container</a>**, the client MUST include a `Link` header with `rel="type"` pointing to the Basic Container type, as in [[LDP]]: `Link: <http://www.w3.org/ns/ldp#BasicContainer>; rel="type"`. A server MAY accept content in such a request (for example, initial RDF as in [[LDP]]); otherwise, it MUST reject a request that has content with `415 (Unsupported Media Type)` [[!RFC9110]].
 - To create a **<a>Data resource</a>**, the client includes the resource content in the request body with the appropriate `Content-Type` header.
 
 **Example (POST to create a new data resource):**
@@ -37,6 +37,7 @@ POST /alice/notes/ HTTP/1.1
 Host: example.com
 Authorization: Bearer <token>
 Content-Type: text/plain
+Slug: shoppinglist.txt
 Content-Length: 47
 
 milk
@@ -67,6 +68,7 @@ POST /alice/ HTTP/1.1
 Host: example.com
 Authorization: Bearer <token>
 Content-Length: 0
+Slug: notes
 Link: <http://www.w3.org/ns/ldp#BasicContainer>; rel="type"
 ```
 
