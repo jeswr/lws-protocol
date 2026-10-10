@@ -172,11 +172,33 @@
       <section id="conformance">
         <!-- Respec automagically adds the heading. -->
         <p>
-          A <dfn>LWS Server</dfn> is an HTTP server [[!rfc9112]] that complies with all of the relevant "MUST" statements in this specification. Specifically, the relevant normative "MUST" statements in <a href="#operations"></a> of this document MUST be respected.
+          Conformance to this specification is defined over HTTP: the messages that clients and servers exchange (methods, header fields, status codes and representations) and the resource state those messages observe. The abstract <a>operations</a> are an informative model that explains the HTTP binding; conformance is not tested against them.
         </p>
 
         <p>
-          An <dfn>LWS Client</dfn> is an HTTP client [[!rfc9112]] that complies with all of the relevant "MUST" statements in this specification. Specifically, the relevant normative "MUST" statements in <a href="#operations"></a> of this document MUST be respected.
+          A <dfn>LWS Server</dfn> is an HTTP server [[!RFC9110]] that satisfies every normative requirement in this specification that applies to servers, including those on representations, resource state, discovery and authorization. <a href="#tbl-http-conformance"></a> summarizes the HTTP binding of each operation; it does not replace the requirements in the sections it links to.
+        </p>
+
+        <p>
+          An <dfn>LWS Client</dfn> is an HTTP client [[!RFC9110]] that satisfies every normative requirement in this specification that applies to clients. In particular, it uses the HTTP methods and header fields in <a href="#tbl-http-conformance"></a> to perform an operation.
+        </p>
+
+        <table class="data numbered" id="tbl-http-conformance">
+          <caption>Normative HTTP binding of each operation</caption>
+          <thead>
+            <tr><th>Operation</th><th>Request</th><th>Success</th><th>Binding</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><a>create resource</a></td><td><code>POST</code> to a <a>container</a></td><td><code>201</code> with <code>Location</code></td><td><a href="#create-resource"></a></td></tr>
+            <tr><td><a>read resource</a></td><td><code>GET</code>, <code>HEAD</code></td><td><code>200</code>, <code>206</code>, <code>304</code></td><td><a href="#read-resource"></a></td></tr>
+            <tr><td><a>update resource</a></td><td><code>PUT</code>, <code>PATCH</code> (<code>application/merge-patch+json</code> for JSON resources)</td><td><code>200</code>, <code>204</code></td><td><a href="#update-resource"></a></td></tr>
+            <tr><td><a>delete resource</a></td><td><code>DELETE</code></td><td><code>204</code></td><td><a href="#delete-resource"></a></td></tr>
+            <tr><td>read or update metadata</td><td><code>GET</code>, <code>HEAD</code>, <code>PATCH</code>, and <code>PUT</code> if advertised in <code>Allow</code>, on the <a>linkset resource</a></td><td><code>200</code>, <code>204</code>, <code>304</code></td><td><a href="#metadata"></a></td></tr>
+          </tbody>
+        </table>
+
+        <p>
+          Error outcomes of all operations map to the status codes in <a href="#summary-of-http-status-mappings"></a>.
         </p>
       </section>
 
