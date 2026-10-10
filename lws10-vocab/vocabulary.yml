@@ -43,6 +43,14 @@ class:
     comment: A data-bearing resource such as a document, image, or structured data file.
     upper_value: StorageResource
 
+  - id: ContainerPage
+    label: Container Page
+    comment: A page of resource descriptions, such as a page of search results.
+
+  - id: TypeIndex
+    label: Type Index
+    comment: A listing of the types of resources in a storage.
+
   - id: Storage
     label: Storage
     comment: A Linked Web Storage instance.
@@ -94,13 +102,13 @@ class:
 property:
   - id: items
     label: items
-    domain: lws:Container
+    domain: [lws:Container, lws:ContainerPage, lws:TypeIndex]
     container: set
     comment: The list of resources contained in a container.
 
   - id: totalItems
     label: total items
-    domain: lws:Container
+    domain: [lws:Container, lws:ContainerPage, lws:TypeIndex]
     comment: The total number of items in a container.
 
   - id: dct:format

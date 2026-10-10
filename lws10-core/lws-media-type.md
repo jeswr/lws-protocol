@@ -7,13 +7,19 @@ Servers MUST support <a>container representations</a> in the media type `applica
 
 #### LWS Profile
 
-The URI `https://www.w3.org/ns/lws/v1` identifies the <dfn>LWS profile</dfn> [[RFC6906]]. An `application/ld+json` document in the <a>LWS profile</a> is compacted with the [LWS context](#jsonld-context) and framed in the shape that LWS defines for it [[!JSON-LD11-FRAMING]]; for a <a>container</a>, that is a <a>container representation</a> as defined in [](#container-representation), with the <a>container</a> as its top-level object. LWS uses this media type and profile for every JSON-LD document it defines. A representation of a <a>container</a> in another RDF media type conforms to the <a>LWS profile</a> if it is RDF isomorphic to the `application/ld+json` representation in the <a>LWS profile</a> of the same <a>container</a> state and page; that is, if the RDF it encodes is isomorphic, as defined in [RDF Dataset Comparison](https://www.w3.org/TR/rdf12-concepts/#section-dataset-isomorphism) [[!RDF12-CONCEPTS]], to the RDF that representation encodes.
+The URI `https://www.w3.org/ns/lws/v1` identifies the <dfn>LWS profile</dfn> [[RFC6906]]. An `application/ld+json` document in the <a>LWS profile</a> is a single JSON object that:
+
+- has an `@context` that includes the [LWS context](#jsonld-context), and uses the terms that context defines in place of the IRIs they map to;
+- has the resource it describes as its top-level object, with each other node it describes embedded under the property that references it (for a <a>container</a>, each contained resource description under `items`), as JSON-LD framing [[?JSON-LD11-FRAMING]] produces;
+- represents integer values, such as those of `totalItems` and `size`, as JSON numbers.
+
+For a <a>container</a>, such a document is a <a>container representation</a> as defined in [](#container-representation). LWS uses this media type and profile for the JSON-LD documents it defines, other than the <a>storage description</a>. A representation of a <a>container</a> in another RDF media type conforms to the <a>LWS profile</a> if it is RDF isomorphic to the `application/ld+json` representation in the <a>LWS profile</a> of the same <a>container</a> state and page; that is, if the RDF it encodes is isomorphic, as defined in [RDF Dataset Comparison](https://www.w3.org/TR/rdf12-concepts/#section-dataset-isomorphism) [[!RDF12-CONCEPTS]], to the RDF that representation encodes.
 
 #### Content Negotiation
 
-Servers MUST set the `Content-Type` response header to the media type of the selected representation.
+Servers MUST honor requests for `application/ld+json` in the <a>LWS profile</a> on <a>containers</a>, and MUST set the `Content-Type` response header to the media type of the selected representation.
 
-A client requests a representation in the <a>LWS profile</a> by including the <a>LWS profile</a> URI in the `profile` parameter of an RDF media type. RDF media types that define this parameter include `application/ld+json` [[JSON-LD11]], `text/turtle` [[RDF12-TURTLE]], `application/trig` [[RDF12-TRIG]], `application/n-triples` [[RDF12-N-TRIPLES]], and `application/n-quads` [[RDF12-N-QUADS]]. If the server selects such a media type, the response MUST conform to the <a>LWS profile</a>, that is, it MUST conform to the <a>LWS profile</a> as defined above, and its `Content-Type` MUST include the same `profile` parameter. A server MUST NOT select such a media type if it cannot produce a representation in the <a>LWS profile</a> in it.
+A client requests a representation in the <a>LWS profile</a> by including the <a>LWS profile</a> URI in the `profile` parameter of an RDF media type. RDF media types that define this parameter include `application/ld+json` [[JSON-LD11]], `text/turtle` [[RDF12-TURTLE]], `application/trig` [[RDF12-TRIG]], `application/n-triples` [[RDF12-N-TRIPLES]], and `application/n-quads` [[RDF12-N-QUADS]]. If the server selects such a media type, the response MUST conform to the <a>LWS profile</a> and its `Content-Type` MUST include the same `profile` parameter. A server MUST NOT select such a media type if it cannot produce a representation in the <a>LWS profile</a> in it.
 
 For an RDF media type that does not define a `profile` parameter, such as `application/rdf+xml`, a server MAY indicate that a representation conforms to the <a>LWS profile</a> with a `Link` header whose relation type is `profile` and whose target is the <a>LWS profile</a> URI [[!RFC6906]]. Such a representation MUST conform to the <a>LWS profile</a>.
 
