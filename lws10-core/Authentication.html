@@ -43,12 +43,13 @@
 <section id="authentication-mti-suite">
   <h3>Mandatory-to-Implement Authentication Suite</h3>
   <p>
-    To ensure that any <a>LWS Client</a> can authenticate with any <a>LWS Server</a>, an authorization server
-    that a storage server identifies in an <code>as_uri</code> challenge parameter MUST support the
-    OpenID Connect <a>authentication suite</a> [[!LWS10-AUTHN-OPENID]]. It MAY support additional
+    So that every <a>LWS Server</a> offers at least one common <a>authentication suite</a>, an <a>LWS Server</a>
+    MUST only identify, in an <code>as_uri</code> challenge parameter, authorization servers that accept
+    <a data-lt="authentication credential">authentication credentials</a> of the OpenID Connect
+    <a>authentication suite</a> [[!LWS10-AUTHN-OPENID]] at their token endpoint. Those authorization servers MAY support additional
     <a data-lt="authentication suite">authentication suites</a>.
     An <a>LWS Client</a> that obtains <a data-lt="authentication credential">authentication credentials</a>
-    for end users SHOULD support [[!LWS10-AUTHN-OPENID]].
+    for end users SHOULD support [[!LWS10-AUTHN-OPENID]]; such a client can then authenticate with any <a>LWS Server</a>.
   </p>
 </section>
 
