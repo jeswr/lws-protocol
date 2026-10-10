@@ -51,6 +51,11 @@ class:
     label: Storage Root
     comment: A service endpoint for a storage root container.
 
+  - id: AuthorizationServer
+    label: Authorization Server
+    comment: A service type identifying an authorization server whose access tokens a storage accepts.
+    defined_by: https://www.w3.org/TR/lws-core/
+
   - id: OpenIdProvider
     label: OpenID Provider
     comment: An OpenID Connect identity provider service.
