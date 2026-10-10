@@ -35,8 +35,8 @@ client (called in this specification <dfn data-cite="RFC6749#section-1.1">author
     No interaction between them is required beyond what this section defines: the authorization server publishes its
     <a href="#authorization-server-metadata">metadata</a> and signing keys, and the storage server
     <a href="#authorization-token-validation-verification">validates</a> the access tokens it issues using them.
-    Any conforming storage server can therefore accept access tokens from any conforming authorization server.
-    Which authorization servers a storage server trusts for a given <code>realm</code> is a matter of deployment configuration.
+    A storage server therefore needs no bilateral protocol to validate access tokens from a conforming authorization server.
+    Which (<code>as_uri</code>, <code>realm</code>) pairs a storage server trusts is a matter of deployment configuration.
   </p>
 
   <section id="authorization-server-discovery">
@@ -87,7 +87,8 @@ WWW-Authenticate: Bearer as_uri="https://authorization.example",
 
     <p>
       An authorization server MUST provide a metadata resource to allow clients to discover endpoint locations and capabilities as described
-      in [[!RFC8414]]. This metadata resource MUST be available at a URL with the path <code>/.well-known/lws-configuration</code>.
+      in [[!RFC8414]]. This metadata resource MUST be available at the URL formed from the issuer identifier using the well-known URI suffix
+      <code>lws-configuration</code>, as described in Section 3.1 of [[!RFC8414]]. The metadata MUST include <code>jwks_uri</code>.
     </p>
 
     <p>
@@ -222,7 +223,7 @@ grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Atoken-exchange
           <code>client_id</code> (client id) — <strong>REQUIRED</strong>. This claim MUST be a URI identifying the client.
         </li>
         <li>
-          <code>aud</code> (audience) — <strong>REQUIRED</strong>. This claim MUST include the URI supplied by the client
+          <code>aud</code> (audience) — <strong>REQUIRED</strong>. This claim MUST contain exactly one value: the URI supplied by the client
           in the resource parameter. This value will be used to restrict the entities for which the access token is valid. This will
           be the same value as provided by a storage server in the <code>realm</code> parameter of a <code>WWW-Authenticate</code> challenge.
         </li>
@@ -288,7 +289,7 @@ Content-Type: application/json
   "sub": "https://id.example/agent",
   "iss": "https://authorization.example",
   "client_id": "https://app.example/id",
-  "aud": "https://storage.example",
+  "aud": "https://storage.example/storage_1",
   "exp": 1735686300,
   "iat": 1735686000,
   "jti": "550e8400-e29b-41d4-a716-446655440000"
@@ -328,19 +329,19 @@ Authorization: Bearer eyJ0eXAiOiJhcytqd3QiLCJhbGciOiJFUzI1NiIs...DeWt4QuZXso
 
       <ul>
         <li>
-          Issuer Validation: Verify the <code>iss</code> claim is identical to the <code>as_uri</code> that the storage server
-          advertises for the target resource, i.e. an authorization server it is configured to trust for that <code>realm</code>.
+          Issuer Validation: Verify the <code>iss</code> claim is identical to the <code>as_uri</code> of a challenge that the storage server
+          sends for the target resource, i.e. an authorization server it is configured to trust for that challenge's <code>realm</code>.
         </li>
         <li>
           JWT Signature Validation: Verify the JWT as described in Section 4 of [[!RFC9068]], including the <code>typ</code>
-          header value <code>at+jwt</code>, using a key from the <code>jwks_uri</code> of the
+          header value <code>at+jwt</code> or <code>application/at+jwt</code>, using a key from the <code>jwks_uri</code> of the
           <a href="#authorization-server-metadata">authorization server metadata</a> for the <code>iss</code> value.
           The <code>issuer</code> in that metadata MUST be identical to the <code>iss</code> claim [[!RFC8414]].
           Storage servers SHOULD cache this metadata and these keys and MUST support key rotation.
         </li>
         <li>
           Audience Validation: Verify the <code>aud</code> claim contains exactly one value and this value is the <code>realm</code>
-          that the storage server advertises for the target resource.
+          of the same challenge.
         </li>
         <li>
           Temporal Validation, subject to an allowable clock skew between systems.
@@ -360,12 +361,13 @@ Authorization: Bearer eyJ0eXAiOiJhcytqd3QiLCJhbGciOiJFUzI1NiIs...DeWt4QuZXso
 
       <p>
         A storage server MAY additionally use OAuth 2.0 Token Introspection [[RFC7662]] when the authorization server metadata
-        includes an <code>introspection_endpoint</code>; this does not replace the checks above.
+        includes an <code>introspection_endpoint</code>, authenticating to that endpoint as required by Section 2.1 of [[RFC7662]];
+        it MUST reject the token if the introspection response is not <code>"active": true</code>. Introspection does not replace the checks above.
       </p>
 
       <p>
         If validation fails, the storage server MUST return 401 Unauthorized with a <code>WWW-Authenticate</code> header
-        containing an appropriate error parameter (e.g., invalid_token, invalid_request, or insufficient_scope).
+        containing the error code <code>invalid_token</code>, as required by Section 4 of [[!RFC9068]] and Section 3.1 of [[!RFC6750]].
       </p>
 
       <p>
