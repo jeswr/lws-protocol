@@ -156,6 +156,7 @@ signature
       </p>
 
       <p>
+        A verifier MUST support subject identifiers that are HTTPS URIs; support for other schemes, such as DIDs [[DID-1.1]], is OPTIONAL.
         In the absence of a pre-existing trust relationship, the validator MUST dereference the <code>sub</code> (subject) claim in the <a>authentication credential</a>.
         The resulting resource MUST be formatted as a valid controlled identifier document [[!CID-1.0]] with an <code>id</code> value equal to the subject identifier.
       </p>

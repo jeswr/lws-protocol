@@ -89,6 +89,10 @@
 
       <p>
         The SAML token MUST use the <code>saml:NameID</code> assertion for the LWS subject identifier.
+        A verifier MUST support subject identifiers that are HTTPS URIs; support for other schemes is OPTIONAL.
+        The <code>Format</code> attribute of <code>saml:NameID</code> MUST be omitted or be
+        <code>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified</code>; the persistent and transient formats
+        denote opaque identifiers that are not subject URIs [[!SAML2-CORE]].
       </p>
 
       <p>
@@ -130,7 +134,7 @@
   &lt;saml:Assertion Version="2.0" IssueInstant="2025-10-25T01:01:16Z"&gt;
     &lt;saml:Issuer&gt;https://idp.example&lt;/saml:Issuer&gt;
     &lt;saml:Subject&gt;
-      &lt;saml:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"&gt;
+      &lt;saml:NameID Format="urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"&gt;
           https://id.example/end-user
       &lt;saml:NameID&gt;
       &lt;saml:SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:bearer"&gt;
@@ -204,12 +208,9 @@
       </p>
 
       <p>
-        The <code>saml:NameID</code> element is used as the LWS subject identifier. When a
-        persistent name identifier format is used, it enables verifiers and storage servers
-        to correlate an end-user's activity across sessions and resources. Identity providers
-        that support transient name identifiers can reduce this correlation, though deployers
-        will need to evaluate whether transient identifiers are compatible with the access
-        control requirements of their LWS deployment.
+        The <code>saml:NameID</code> element carries the LWS subject identifier, a globally unique
+        URI. It enables verifiers and storage servers to correlate an end-user's activity across
+        sessions and resources.
       </p>
 
       <p>

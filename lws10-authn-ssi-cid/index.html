@@ -58,7 +58,7 @@
 
       <div class="note">
         <p>
-          This authentication suite is designed to work with subject identifiers that use HTTPS URIs as well as DID URIs. Since DID documents, as defined in Decentralized Identifiers (DIDs) 1.1 [[DID-1.1]] Section 5.1.2, extend controlled identifier documents [[CID-1.0]], they are compatible with the validation process described in this specification.
+          This authentication suite is designed to work with subject identifiers that use HTTPS URIs as well as DID URIs, though verifiers are only required to support HTTPS URIs. Since DID documents, as defined in Decentralized Identifiers (DIDs) 1.1 [[DID-1.1]] Section 5.1.2, extend controlled identifier documents [[CID-1.0]], they are compatible with the validation process described in this specification.
         </p>
       </div>
     </section>
@@ -157,6 +157,7 @@ signature
       </p>
 
       <p>
+        A verifier MUST support subject identifiers that are HTTPS URIs. Support for DIDs is OPTIONAL and is determined per DID method.
         In the absence of a pre-existing trust relationship, the verifier MUST dereference the <code>sub</code> (subject) claim in the <a>authentication credential</a>.
         The resulting resource MUST be formatted as a valid controlled identifier document [[!CID-1.0]] with an <code>id</code> value equal to the subject identifier.
       </p>
