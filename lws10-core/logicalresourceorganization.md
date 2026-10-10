@@ -22,7 +22,9 @@ The <a>containment</a> relationship between a resource and its parent <a>contain
 Link: </alice/notes/>; rel="up"
 ```
 
-A <a>container</a>'s members are listed in its representation using the `items` property. <a>Containment</a> uses the Linked Data Platform vocabulary (`ldp:BasicContainer`, `ldp:contains`) [[LDP]]; an LWS server is not otherwise required to conform to [[LDP]]. The server manages this list; clients cannot modify it directly. Membership changes occur as a side effect of resource creation and deletion.
+A <a>container</a>'s members are listed in its representation using the `items` property. The server manages this list; clients cannot modify it directly. Membership changes occur as a side effect of resource creation and deletion.
+
+<a>Containment</a> uses the Linked Data Platform vocabulary (`ldp:BasicContainer`, `ldp:contains`) [[LDP]]; an LWS server is not otherwise required to conform to [[LDP]]. A `rel="type"` link to an [[LDP]] resource or container type in a response advertises LDP support ([[LDP]] Sections 4.2.1.4 and 5.2.1.4), so a server that does not conform to [[LDP]] MUST NOT send one. In a create request, such a link selects the type of resource to create, as in [[LDP]].
 
 ### Containment Integrity
 

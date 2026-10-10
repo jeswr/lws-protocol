@@ -7,7 +7,7 @@ prefix:
   - id: as
     value: https://www.w3.org/ns/activitystreams#
   - id: schema
-    value: https://schema.org/
+    value: http://schema.org/
   - id: dct
     value: http://purl.org/dc/terms/
   - id: dcterms
@@ -100,10 +100,9 @@ property:
     external: true
     comment: A resource contained in a container. Used for the `items` of an LWS container.
 
-  - id: as:totalItems
+  - id: totalItems
     label: total items
     domain: ldp:BasicContainer
-    external: true
     comment: The total number of items in a container.
 
   - id: dct:format

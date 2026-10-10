@@ -1,6 +1,6 @@
 ### Container Representation
 
-An LWS <dfn>container representation</dfn> describes a <a>container</a> and its contents. This section defines its required and optional properties when served as `application/lws+json`. Representations in other RDF media types can be requested through [content negotiation](#content-negotiation). The representation reuses existing vocabularies: `Container` denotes `ldp:BasicContainer` and `items` denotes `ldp:contains` [[LDP]], and `totalItems` denotes `as:totalItems` [[ACTIVITYSTREAMS-VOCABULARY]].
+An LWS <dfn>container representation</dfn> describes a <a>container</a> and its contents. This section defines its required and optional properties when served as `application/lws+json`. Representations in other RDF media types can be requested through [content negotiation](#content-negotiation). The representation reuses existing vocabularies: `Container` denotes `ldp:BasicContainer` and `items` denotes `ldp:contains` [[LDP]].
 
 #### Container Properties
 
@@ -74,13 +74,12 @@ The following example shows a <a>container</a> at `https://storage.example/alice
 ```nohighlight
 @prefix lws: <https://www.w3.org/ns/lws#> .
 @prefix ldp: <http://www.w3.org/ns/ldp#> .
-@prefix as: <https://www.w3.org/ns/activitystreams#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix schema: <http://schema.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 <> a ldp:BasicContainer ;
-  as:totalItems 2 ;
+  lws:totalItems 2 ;
   ldp:contains <shoppinglist.txt>, <todo.json> .
 
 <shoppinglist.txt> a lws:DataResource ;
@@ -100,7 +99,7 @@ The following example shows a <a>container</a> at `https://storage.example/alice
 
 ```nohighlight
 <https://storage.example/alice/notes/> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/ldp#BasicContainer> .
-<https://storage.example/alice/notes/> <https://www.w3.org/ns/activitystreams#totalItems> "2"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<https://storage.example/alice/notes/> <https://www.w3.org/ns/lws#totalItems> "2"^^<http://www.w3.org/2001/XMLSchema#integer> .
 <https://storage.example/alice/notes/> <http://www.w3.org/ns/ldp#contains> <https://storage.example/alice/notes/shoppinglist.txt> .
 <https://storage.example/alice/notes/> <http://www.w3.org/ns/ldp#contains> <https://storage.example/alice/notes/todo.json> .
 <https://storage.example/alice/notes/shoppinglist.txt> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://www.w3.org/ns/lws#DataResource> .
@@ -123,11 +122,10 @@ The following example shows a <a>container</a> at `https://storage.example/alice
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
          xmlns:lws="https://www.w3.org/ns/lws#"
          xmlns:ldp="http://www.w3.org/ns/ldp#"
-         xmlns:as="https://www.w3.org/ns/activitystreams#"
          xmlns:dcterms="http://purl.org/dc/terms/"
          xmlns:schema="http://schema.org/">
   <ldp:BasicContainer rdf:about="">
-    <as:totalItems rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2</as:totalItems>
+    <lws:totalItems rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2</lws:totalItems>
     <ldp:contains>
       <lws:DataResource rdf:about="shoppinglist.txt">
         <dcterms:format>text/plain</dcterms:format>
